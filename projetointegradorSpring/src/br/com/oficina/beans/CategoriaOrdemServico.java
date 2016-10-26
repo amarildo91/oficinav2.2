@@ -17,9 +17,9 @@ import javax.persistence.Transient;
 public class CategoriaOrdemServico {
 
 	@Id
-	/*@Column(name="id")
-	@SequenceGenerator(name="seq_categoria", sequenceName="account_categoria_id_seq", allocationSize=1)*/
-	@GeneratedValue/*(strategy=GenerationType.SEQUENCE, generator="seq_categoria")*/
+	@Column(name="id")
+	@SequenceGenerator(name="seq_categoria", sequenceName="account_categoria_id_seq", allocationSize=1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq_categoria")
 	private long id;
 	private String descricao;
 	@OneToMany
