@@ -46,6 +46,17 @@ public class OrdemServicoModelImpl {
 		return listPessoa;
 	}
 	
+	public CategoriaOrdemServico getCategoriaById(Long id){
+		System.out.println("getCategoriaById(Long id) - enter");
+		CategoriaOrdemServico categoria = new CategoriaOrdemServico();
+		try {
+			categoria = em.find(CategoriaOrdemServico.class, id);
+		} catch (Exception e) {
+			System.out.println("getCategoriaById(Long id) - ERRO: " + e.getMessage());
+		}
+		return categoria;
+	}
+	
 	public Pessoa getPessoaById(Long id){
 		System.out.println("getPessoaById(Long id) - enter");
 		Pessoa pessoa = new Pessoa();
@@ -65,12 +76,43 @@ public class OrdemServicoModelImpl {
 			Date date = (Date)formatter.parse(ordemServico.getData());
 			ordemServico.setDtOrdemServico(date);
 			
+			for (int i=0;i<ordemServico.getItem().size();i++){
+				if (!ordemServico.getItem().get(i).getDescricao().isEmpty()){
+					for (int j=0;j<ordemServico.getItem().get(i).getListProduto().size();j++){
+						if (ordemServico.getItem().get(i).getListProduto().get(j).getId() == 0){
+							ordemServico.getItem().get(i).getListProduto().remove(j);
+						}
+					}
+				}
+				daoItem.persist(ordemServico.getItem().get(i));
+				for (int j=0;j<ordemServico.getItem().get(i).getListProduto().size();j++){
+					this.updateQtProduto(ordemServico.getItem().get(i).getListProduto().get(j), false);
+				}
+			}
 			daoOrdem.persist(ordemServico);
 			persist = true;
 		} catch (Exception e) {
 			System.out.println("persitOrdemServico(OrdemServico ordemServico) - ERRO: " + e.getMessage());
 		}
 		return persist;
+	}
+	
+	public void updateQtProduto(Produto produto, boolean remove){
+		System.out.println("updateQtProduto(Produto produto) - enter");
+		GenericoDao<Produto> daoProd = new GenericoDao<Produto>(Produto.class);
+		try {
+			Produto produtoEstoque = em.find(Produto.class, produto.getId());
+			int qt = 0;
+			if (!remove){
+				qt = produtoEstoque.getQuantidade() - produto.getQuantidade();
+			} else {
+				qt = produtoEstoque.getQuantidade() + produto.getQuantidade();
+			}
+			produtoEstoque.setQuantidade(qt);
+			daoProd.merge(produtoEstoque);
+		} catch (Exception e) {
+			System.out.println("updateQtProduto(Produto produto) - ERRO: " + e.getMessage());
+		}
 	}
 	
 	public OrdemServico getOrdemServicoById(Long id){
@@ -135,7 +177,7 @@ public class OrdemServicoModelImpl {
 		try {
 			listProduto = em.createQuery("from Produto where categoria.id = "+ id).getResultList();
 			for (Produto produto : listProduto){
-				option += "<option value=\""+produto.getId()+"\" data-valor=\""+produto.getValor()+"\">"+produto.getDescricao()+"</option>";
+				option += "<option value=\""+produto.getId()+"\" data-valor=\""+produto.getValor()+"\" data-quantidade=\""+produto.getQuantidade()+"\">"+produto.getDescricao()+"</option>";
 			}
 		} catch (Exception e) {
 			System.out.println("buscarProduto(Long id) - ERRO: " +e.getMessage());

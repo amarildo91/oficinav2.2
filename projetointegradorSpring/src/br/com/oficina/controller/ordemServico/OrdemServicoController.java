@@ -16,6 +16,7 @@ import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Pessoa;
 import br.com.oficina.beans.Produto;
 import br.com.oficina.beans.ProdutoListView;
+import br.com.oficina.beans.Status;
 import br.com.oficina.model.ordemServico.OrdemServicoModelImpl;
 import br.com.oficina.utils.Constantes;
 
@@ -39,21 +40,22 @@ public class OrdemServicoController {
 	@RequestMapping("/formOrdemServico")
 	public ModelAndView formOrdemServico(){
 		System.out.println("formOrdemServico() - enter");
-		
 		ModelAndView model = new ModelAndView("ordemServico/formOrdemServico", "ordemServico", new OrdemServico());
 		model.addObject("pessoas", ordemModel.listAllPessoa());
 		model.addObject("categorias", ordemModel.listAllCategoria());
+		model.addObject("status", Status.values());
 		return model;
 	}
 	
 	@RequestMapping("/cadastrarOrdemServico")
-	public String cadastrarOrdemServico(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @Valid ProdutoListView produto, @Valid ItemListView item){
+	public String cadastrarOrdemServico(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @Valid ItemListView item){
 		System.out.println("cadastrarOrdemServico(OrdemServico ordemServico, String idPessoa) - enter");
 		
 		boolean insert = false;
 		if(!idPessoa.isEmpty()){
 			Pessoa pessoa = ordemModel.getPessoaById(Long.parseLong(idPessoa));
-			ordemServico.setPessoa(pessoa);
+			ordemServico.setPessoa(pessoa);			
+			ordemServico.setItem(item.getItem());
 			insert = ordemModel.persitOrdemServico(ordemServico);
 		}
 		return "redirect:ordemServico?insert=true&successMessage="+insert;

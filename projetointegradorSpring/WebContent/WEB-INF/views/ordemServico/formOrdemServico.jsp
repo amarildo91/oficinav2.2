@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <tag:template id="text" name="text" title="Ordem de Serviço">
 	<jsp:attribute name="divBody">
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	    <script src="${pageContext.request.contextPath}/bootstrap-dist/js/jquery.min.js"></script>
 		<script>
 			function filter (phrase, _id, cellNr){  
 				var suche = phrase.value.toLowerCase(); 
@@ -50,45 +50,192 @@
 			};
 			
 			var cont = 0;
+			var contItem = 0;
+			var produtoItem = "";
+			var qtProdutoEstoque = [];
+			var edit = false;
 			function selectProduto(){
-				var valorAproximado = $("#quantidade").val() * $("#produtoSelected option:selected").data("valor");
-				var a = parseFloat($("#valorItem").val());
-				var b =  parseFloat(valorAproximado);
-				alert(a+" - "+b);
-				$("#valorItem").val(a + b);
-				
-				$("#selectProd tbody").append("<tr>"+
-											"<td>"+$("#produtoSelected").val()+"</td>"+
-											"<td>"+$("#produtoSelected option:selected").text()+"</td>"+
-											"<td>"+$("#quantidade").val()+"</td>"+
-											"<td>"+valorAproximado+"</td>"+
-										"</tr>");
-				$("#formItem").append("<input type='hidden' name='produto["+cont+"].id' value='"+$("#produtoSelected").val()+"'/>");
-				$("#formItem").append("<input type='hidden' name='produto["+cont+"].descricao' value='"+$("#produtoSelected option:selected").text()+"'/>");
-				$("#formItem").append("<input type='hidden' name='produto["+cont+"].valor' value='"+valorAproximado+"'/>");
-				$("#formItem").append("<input type='hidden' name='produto["+cont+"].quantidade' value='"+$("#quantidade").val()+"'/>");
-				cont++;
+				if (qtProdutoEstoque.indexOf($("#produtoSelected").val()) < 0){										
+					if ($("#quantidade").val() <=  $("#produtoSelected option:selected").data("quantidade")){
+						
+						if (edit){
+							cont = contEditItemProd; 
+						}
+						
+						qtProdutoEstoque.push($("#produtoSelected").val());
+						var valorAproximado = $("#quantidade").val() * $("#produtoSelected option:selected").data("valor");
+						var a = parseFloat($("#valorItem").val());
+						var b =  parseFloat(valorAproximado);
+						$("#valorItem").val(a + b);
+						$("#spanProd .help-block").css("display", "none");
+						$("#spanEstoque .help-block").css("display", "none");
+						$("#selectProd tbody").append("<tr id='produto"+cont+"' data-produto="+$("#produtoSelected").val()+" data-descricao='"+$("#produtoSelected option:selected").text()+"' data-quantidade="+$("#quantidade").val()+" data-valor="+valorAproximado+" data-categoria="+$("#idCategoria").val()+">"+
+													"<td>"+$("#produtoSelected").val()+"</td>"+
+													"<td>"+$("#produtoSelected option:selected").text()+"</td>"+
+													"<td>"+$("#quantidade").val()+"</td>"+
+													"<td>"+valorAproximado+"</td>"+
+													"<td><a href='javascript:removeProduto($(\"#produto"+cont+"\"));' data-cont="+cont+" data-contItem="+contItem+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
+												"</tr>");
+						$("#idCategoria").val("");
+						$("#produtoSelected").val("");
+						$("#quantidade").val("");
+						cont++;
+					} else {
+						$("#spanEstoque .help-block").css("display", "block");
+						$("#produtoSelected").val("");
+						$("#quantidade").val("");
+					}	
+				}else{
+					$("#spanExists .help-block").css("display", "block");
+				}
 			}
 			
-			var contItem = 0;
+			function removeProduto(componente){
+				valor = $("#valorItem").val() - componente.data("valor");
+				$("#valorItem").val(valor);
+				qtProdutoEstoque.splice(qtProdutoEstoque.indexOf('"+componente.data("produto");+"'));
+				componente.remove();
+			}
+			
 			function selectItem(){
-				$("#rowZero").remove();
-				$(".tableItem tbody").append("<tr>"+
-												"<td>"+contItem+"</td>"+
-												"<td>Teste</td>"+
-												"<td>10</td>"+
-											"</tr>");
+				var validaItem = true;
+				if ($.trim($("#descricao").val()) == ""){
+					$("#descricaoForm").addClass("has-error");
+					$("#descricaoForm .help-block").css("display", "block");
+					validaItem = false;
+				} 
+				if($.trim($("#valorItem").val()) == ""){
+					$("#valorItemForm").addClass("has-error");
+					$("#valorItemForm .help-block").css("display", "block");
+					validaItem = false;
+				} 
+				if ($("#selectProd tbody tr").length == 0){
+					$("#spanProd .help-block").css("display", "block");
+					validaItem = false;
+				} 
+				if (validaItem){
+					if (!edit){
+						contId = contItem + 1;
+						$("#rowZero").remove();
+						$(".tableItem tbody").append("<tr>"+
+														"<td>"+contId+"</td>"+
+														"<td>"+$("#descricao").val()+"</td>"+
+														"<td>"+$("#valorItem").val()+"</td>"+
+														"<td><a href=\"javascript:editItem($('#item"+contItem+"'));\" id='item"+contItem+"' data-contitem='"+contItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
+														"<td><span class='glyphicon glyphicon-remove'></span></td>"+
+													"</tr>");
+						
+						for (i=0;i<cont;i++){
+							if ($("#produto"+i).length > 0){
+								produtoItem += 
+							           "<input type='hidden' name='item["+contItem+"].listProduto["+i+"].id' value='"+$("#produto"+i).data("produto")+"' id='item"+contItem+"_produtoId"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contItem+"_descricao"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contItem+"_valor"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].quantidade' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contItem+"_quantidade"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contItem+"_idCategoria"+i+"'/>";
+							}		  
+						}
+						
+						$("#formItem").append("<input type='hidden' name='item["+contItem+"].valorItem' value='"+$("#valorItem").val()+"' id='valorItem"+contItem+"'/>");
+						$("#formItem").append("<input type='hidden' name='item["+contItem+"].descricao' value='"+$("#descricao").val()+"' id='descricao"+contItem+"'/>");
+						$("#formItem").append("<input type='hidden' name='item["+contItem+"].idItem' value='0' id='idItem"+contItem+"'/>");
+						$("#formItem").append(produtoItem);
+						produtoItem = "";
+						$("#descricao").val("");
+						$("#valorItem").val(0);
+						$("#selectProd tbody tr").remove();
+						$("#gridItemModal").modal('hide');
+						cont=0;
+						qtProdutoEstoque = [];
+						contItem++;
+					} else {
+						alert("erro");
+						$("#valorItem"+contEditItem).val($("#valorItem").val());
+						$("#descricao"+contEditItem).val($("#descricao").val());
+						$("#item0").data("contproduto", cont);
+						for (i=0;i<cont;i++){
+						    alert(i);
+						    if ($("#item"+contEditItem+"_produtoId"+i).length > 0){
+								$("#item"+contEditItem+"_produtoId"+i).val($("#produto"+i).data("produto"));
+								$("#item"+contEditItem+"_descricao"+i).val($("#produto"+i).data("descricao"));
+								$("#item"+contEditItem+"_valor"+i).val($("#produto"+i).data("valor"));
+								$("#item"+contEditItem+"_quantidade"+i).val($("#produto"+i).data("quantidade"));
+								$("#item"+contEditItem+"_idCategoria"+i).val($("#produto"+i).data("categoria"));
+						    } else {
+						    	produtoItem += 
+							           "<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].id' value='"+$("#produto"+i).data("produto")+"' id='item"+contEditItem+"_produtoId"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contEditItem+"_descricao"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contEditItem+"_valor"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].quantidade' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contEditItem+"_quantidade"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contEditItem+"_idCategoria"+i+"'/>";
+						    }	
+						}
+						$("#formItem").append(produtoItem);
+						$("#descricao").val("");
+						$("#valorItem").val(0);
+						$("#selectProd tbody tr").remove();
+						$("#gridItemModal").modal('hide');
+						produtoItem = "";
+						cont=0;
+						qtProdutoEstoque = [];
+						edit = false;
+					}
+				} 
+			}
+			
+			var contEditItem = 0;
+			var contEditItemProd = 0;
+			function editItem(componente){
+				edit = true;
+				itemCont = componente.data("contitem");
+				prodCont = componente.data("contproduto");
+				contEditItem = itemCont;
+				contEditItemProd = prodCont;
+				$("#descricao").val($("#descricao"+itemCont).val());
+				$("#valorItem").val($("#valorItem"+itemCont).val());
 				
-				/*$("#formItem").append("<input type='hidden' name='produto["+contItem+"].id' value='"+$("#produtoSelected").val()+"'/>");*/
-				/*$("#formItem").append("<input type='hidden' name='item["+contItem+"].quantidade' value='"+$("#quantidade").val()+"'/>");*/
-				$("#formItem").append("<input type='hidden' name='item["+contItem+"].idCategoria' value='"+$("#idCategoria").val()+"'/>");
-				contItem++;
+				for (i=0;i<prodCont;i++){
+					qtProdutoEstoque.push($("#item"+itemCont+"_produtoId"+i).val());
+					$("#selectProd tbody").append("<tr id='produto"+i+"' data-produto="+$("#item"+itemCont+"_produtoId"+i).val()+" data-descricao='"+$("#item"+itemCont+"_descricao"+i).val()+"' data-quantidade="+$("#item"+itemCont+"_quantidade"+i).val()+" data-valor="+$("#item"+itemCont+"_valor"+i).val()+" data-categoria="+$("#item"+itemCont+"_idCategoria"+i).val()+">"+
+							"<td>"+$("#item"+itemCont+"_produtoId"+i).val()+"</td>"+
+							"<td>"+$("#item"+itemCont+"_descricao"+i).val()+"</td>"+
+							"<td>"+$("#item"+itemCont+"_quantidade"+i).val()+"</td>"+
+							"<td>"+$("#item"+itemCont+"_valor"+i).val()+"</td>"+
+							"<td><a href='javascript:removeProduto($(\"#produto"+i+"\"));' data-cont="+prodCont+" data-contItem="+itemCont+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
+						"</tr>");
+				}
+				$("#gridItemModal").modal();
+			}
+			
+			function addItem(){
+				$("#descricao").val("");
+				$("#valorItem").val(0);
+				$("#selectProd tbody tr").remove();
+				$("#gridItemModal").modal();
+				produtoItem = "";
+				cont=0;
+				qtProdutoEstoque = [];
+				edit = false;
 			}
 			
 			$(document).ready(function(){
-				$(".modal-body").css("max-height", "400px");
+				$(".modal-body").css("max-height", "500px");
 				$(".modal-body").css("overflow-y", "auto");
 				$('#valorTotal').bind('keypress',mask.money);
+				
+				$("#descricao").click(function(){
+					$("#descricaoForm").removeClass("has-error");
+					$("#descricaoForm .help-block").css("display", "none");
+				});
+				
+				$("#valorItem").click(function(){
+					$("#valorItemForm").removeClass("has-error");
+					$("#valorItemForm .help-block").css("display", "none");
+				});
+				
+				$("#produtoSelected").click(function() {
+					$("#spanExists .help-block").css("display", "none");
+				});
 				
 				$("#idCategoria").change(function(){
 					$.ajax({
@@ -143,6 +290,16 @@
 	        	<label for="observacao"><fmt:message key="ordemServico.form.observacao"/></label>
 	        	<textarea class="form-control" rows="5" id="observacao" name="observacao" required="required">${ordemServico.observacao}</textarea>
 	        </div>
+	        <div class="form-group">
+	        	<label for="status"><fmt:message key="ordemServico.form.status"/></label>
+	        	<select class="form-control" id="status" name="status" required="required">
+	        		<option></option>
+        			<option value="${status[0]}">${status[0]}</option>
+        			<option value="${status[1]}">${status[1]}</option>
+        			<option value="${status[2]}">${status[2]}</option>
+        			<option value="${status[3]}">${status[3]}</option>
+	        	</select>
+	        </div>
 	        
 	        <hr>
 	        
@@ -153,12 +310,12 @@
 	        			<th><fmt:message key="ordemServico.form.items.id"/></th>
 	        			<th><fmt:message key="ordemServico.form.items.descricao"/></th>
 	        			<th><fmt:message key="ordemServico.form.items.valor"/></th>
-	        			<th><button type="button" onclick='javascript:$("#gridItemModal").modal();' class="btn btn-default">Adicionar Item</button></th>
+	        			<th colspan="2"><button type="button" onclick='javascript:addItem();' class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Adicionar Item</button></th>
 	        		</tr>
 	        	</thead>
 	        	<tbody>
 	        		<c:if test="${empty ordemServico.item}">
-	        			<tr id="rowZero"><td colspan="4"><fmt:message key="ordemServico.form.items.nenhumCadastro"/></td></tr>
+	        			<tr id="rowZero"><td colspan="5"><fmt:message key="ordemServico.form.items.nenhumCadastro"/></td></tr>
 	        		</c:if>
 	        		<c:forEach items="${ordemServico.item}" var="item">
 	        			<tr>
@@ -222,10 +379,16 @@
 		        <h4 class="modal-title" id="gridModalLabel"><fmt:message key="ordemServico.form.pessoa.title"/></h4>
 		      </div>
 		      <div class="modal-body">
-		      	<div class="form-group">
-		      		<label for="descricao"><fmt:message key="ordemServico.form.descricao"/></label>
+		      	<div class="form-group" id="descricaoForm">
+		      		<label for="descricao" class="control-label"><fmt:message key="ordemServico.form.descricao"/></label>
 		      		<textarea class="form-control" rows="3" name="descricao" id="descricao"></textarea>
-		      	</div>
+		      		<span id='helpBlock' class='help-block' style="display:none">Preencha o campo</span>
+		      	</div>		
+				<div class="form-group" id="valorItemForm">
+				  	<label for="valorItem" class="control-label"><fmt:message key="ordemServico.form.valorItem"/></label>
+				  	<input class="form-control" type="number" name="valorItem" id="valorItem" disabled="disabled" value="0"/>
+				  	<span id='helpBlock' class='help-block' style="display:none">Preencha o campo</span>
+				</div>
 		      	<div class="form-group">
 		        	<label for="idCategoria"><fmt:message key="item.form.categoria"/></label>
 		        	<select name="idCategoria" id="idCategoria" class="form-control">
@@ -240,7 +403,7 @@
 				   		<div class="input-group">
 				   			<div class="form-group">
 				   				<label for="idCategoria"><fmt:message key="item.form.valor"/></label>
-				      			<select class="form-control selectProd" id="produtoSelected" name="idCategoria">
+				      			<select class="form-control selectProd" id="produtoSelected" name="produtoSelected">
 				      				<option></option>
 				        		</select>
 				        	</div>	
@@ -252,32 +415,52 @@
 		        			<div class="input-group">
 	        					<input type="text" name="quantidade" class="form-control" id="quantidade"/>
 	        					<span class="input-group-btn">
-							        <button class="btn btn-primary" type="button" onclick="javascript:selectProduto();">Adicionar</button>
+							        <button class="btn btn-primary" type="button" onclick="javascript:selectProduto();"><span class="glyphicon glyphicon-plus"></span>&nbsp;Adicionar</button>
 							      </span>
 	        				</div>
 	        			</div>
 	        		</div>			
 	        	</div>
+	        	<div class="has-error" id="spanExists"><span id="helpBlock" class="help-block" style="display:none"><b>Produto já foi selecionado.</b></span></div>
+	        	<div class="has-error" id="spanEstoque"><span id="helpBlock" class="help-block" style="display:none">Não há a quantidade solicitada em estoque.</span></div>
 	        	<hr>
-	        	<table class="table table-striped" id="selectProd">
+	        	<div class="has-error" id="spanProd"><span id="helpBlock" class="help-block" style="display:none">Insira produtos na tabela</span></div>
+	        	<table class="table table-striped table-bordered" id="selectProd">
 				  	<thead>
 				  		<tr>
 				  			<td><b>#</b></td>
 				  			<td><b>Produto</b></td>
 				  			<td><b>Quantidade</b></td>
 				  			<td><b>Valor</b></td>
+				  			<td></td>
 				  		</tr>
 				  	</thead>
 				  	<tbody>
 				  	</tbody>
-				  </table>		
-				  <div class="form-group">
-				  	<label for="valorItem"><fmt:message key="ordemServico.form.valorItem"/></label>
-				  	<input class="form-control" type="number" name="valorItem" id="valorItem"/>
-				  </div>			
+				  </table>			
 			  </div>
 		      <div class="modal-footer">
-		      	<button type="button" class="btn btn-default" data-dismiss="modal" onclick="javascript:selectItem();"><fmt:message key="produto.modal.button.nao"/></button>
+		      	<button type="button" class="btn btn-primary" onclick="javascript:selectItem();"><fmt:message key="produto.modal.button.nao"/></button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Modal Estoque insuficiente -->
+		<div id="gridEstoqueModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		      	<input type="hidden" id="idCompromissoExclud" name="id">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="gridModalLabel"><fmt:message key="home.titulo"/></h4>
+		      </div>
+		      <div class="modal-body">
+			      	<h4 class="modal-title" id="gridModalLabel" align="center"><img src="${pageContext.request.contextPath}/bootstrap-dist/img/warning-icon.png" width="50px"><fmt:message key="home.motal.titulo.excluir"/></h4>
+			      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="home.modal.button.nao"/></button>
+		        <button type="submit" class="btn btn-primary"><fmt:message key="home.modal.button.sim"/></button>
 		      </div>
 		    </div>
 		  </div>
