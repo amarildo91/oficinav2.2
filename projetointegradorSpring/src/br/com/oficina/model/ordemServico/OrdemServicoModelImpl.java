@@ -13,6 +13,7 @@ import br.com.oficina.beans.ItemOrdemServico;
 import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Pessoa;
 import br.com.oficina.beans.Produto;
+import br.com.oficina.beans.ProdutoItem;
 import br.com.oficina.dao.GenericoDao;
 import br.com.oficina.utils.FabricaConexao;
 
@@ -68,28 +69,50 @@ public class OrdemServicoModelImpl {
 		return pessoa;
 	}
 	
-	public boolean persitOrdemServico(OrdemServico ordemServico){
+	public int getIndiceProduto(List<ItemOrdemServico> item){
+		System.out.println("getIndiceProduto(List<ItemOrdemServico> item) - enter");
+		int indice = 0;
+		for (ItemOrdemServico itemProd : item){
+			indice = itemProd.getListProduto().size();
+		}
+		return indice;
+	}
+	
+	public boolean persistOrdemServico(OrdemServico ordemServico){
 		System.out.println("persitOrdemServico(OrdemServico ordemServico) - enter");
 		boolean persist = false;
+		GenericoDao<ProdutoItem> daoPrdItem = new GenericoDao<ProdutoItem>(ProdutoItem.class);
 		try {
 			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = (Date)formatter.parse(ordemServico.getData());
 			ordemServico.setDtOrdemServico(date);
 			
+			/*
+			 * valida itens de ordem de servico, os mesmos serão salvos separadamente
+			 */
 			for (int i=0;i<ordemServico.getItem().size();i++){
 				if (!ordemServico.getItem().get(i).getDescricao().isEmpty()){
 					for (int j=0;j<ordemServico.getItem().get(i).getListProduto().size();j++){
-						if (ordemServico.getItem().get(i).getListProduto().get(j).getId() == 0){
+						if (ordemServico.getItem().get(i).getListProduto().get(j).getProduto().getId() == 0){
 							ordemServico.getItem().get(i).getListProduto().remove(j);
+						} 
+						if (ordemServico.getItem().get(i).getListProduto().get(j).getIdProdutoItem() == 0) {
+							daoPrdItem.persist(ordemServico.getItem().get(i).getListProduto().get(j));
+						} else {
+							daoPrdItem.merge(ordemServico.getItem().get(i).getListProduto().get(j));
 						}
 					}
 				}
-				daoItem.persist(ordemServico.getItem().get(i));
+				if (ordemServico.getItem().get(i).getIdItem() == 0){
+					daoItem.persist(ordemServico.getItem().get(i));
+				} else {
+					daoItem.merge(ordemServico.getItem().get(i));
+				}
 				for (int j=0;j<ordemServico.getItem().get(i).getListProduto().size();j++){
-					this.updateQtProduto(ordemServico.getItem().get(i).getListProduto().get(j), false);
+					this.updateQtProduto(ordemServico.getItem().get(i).getListProduto().get(j).getProduto(), false);
 				}
 			}
-			daoOrdem.persist(ordemServico);
+			daoOrdem.merge(ordemServico);
 			persist = true;
 		} catch (Exception e) {
 			System.out.println("persitOrdemServico(OrdemServico ordemServico) - ERRO: " + e.getMessage());
@@ -125,23 +148,6 @@ public class OrdemServicoModelImpl {
 			System.out.println("getOrdemServicoById(Long id) - ERRO: " + e.getMessage());
 		}
 		return ordem;
-	}
-	
-	public boolean mergeOrdemServico(OrdemServico ordemServico){
-		System.out.println("mergeOrdemServico(OrdemServico ordemServico) - enter");
-		
-		boolean merge = false;
-		try {
-			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			Date date = (Date)formatter.parse(ordemServico.getData());
-			ordemServico.setDtOrdemServico(date);
-			
-			daoOrdem.merge(ordemServico);
-			merge = true;
-		} catch (Exception e) {
-			System.out.println("mergeOrdemServico(OrdemServico ordemServico) - ERRO: " + e.getMessage());
-		}		
-		return merge;
 	}
 	
 	@SuppressWarnings("unchecked")

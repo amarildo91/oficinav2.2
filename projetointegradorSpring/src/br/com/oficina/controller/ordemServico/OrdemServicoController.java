@@ -14,7 +14,6 @@ import br.com.oficina.beans.ItemListView;
 import br.com.oficina.beans.ItemOrdemServico;
 import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Pessoa;
-import br.com.oficina.beans.Produto;
 import br.com.oficina.beans.ProdutoListView;
 import br.com.oficina.beans.Status;
 import br.com.oficina.model.ordemServico.OrdemServicoModelImpl;
@@ -56,24 +55,28 @@ public class OrdemServicoController {
 			Pessoa pessoa = ordemModel.getPessoaById(Long.parseLong(idPessoa));
 			ordemServico.setPessoa(pessoa);			
 			ordemServico.setItem(item.getItem());
-			insert = ordemModel.persitOrdemServico(ordemServico);
+			insert = ordemModel.persistOrdemServico(ordemServico);
 		}
 		return "redirect:ordemServico?insert=true&successMessage="+insert;
 	}
 	
+	@SuppressWarnings("static-access")
 	@RequestMapping(value="editOrdemServico", method=RequestMethod.GET)
 	public ModelAndView editOrdemServico(@RequestParam("id") String id){
 		System.out.println("editOrdemServico(String id) - enter");
 		
 		ModelAndView model = new ModelAndView("ordemServico/formOrdemServico");
-		model.addObject("ordemServico", ordemModel.getOrdemServicoById(Long.parseLong(id)));
+		OrdemServico ordem = ordemModel.getOrdemServicoById(Long.parseLong(id));
+		model.addObject("ordemServico", ordem);
 		model.addObject("pessoas", ordemModel.listAllPessoa());
 		model.addObject("categorias", ordemModel.listAllCategoria());
+		model.addObject("contadorProduto", ordemModel.getIndiceProduto(ordem.getItem()));
+		model.addObject("status", ordem.getStatus().values());
 		return model;
 	}
 	
 	@RequestMapping("editOrdemServicoSubmit")
-	public ModelAndView editOrdemServicoSubmit(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @RequestParam("idOrdemServico") String idOrdemServico){
+	public ModelAndView editOrdemServicoSubmit(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @RequestParam("idOrdemServico") String idOrdemServico, @Valid ItemListView item){
 		System.out.println("editOrdemServicoSubmit(OrdemServico ordemServico, String idPessoa, String idOrdemServico) - enter");
 		
 		ModelAndView model = new ModelAndView("ordemServico/formOrdemServico");
@@ -83,10 +86,13 @@ public class OrdemServicoController {
 				Pessoa pessoa = ordemModel.getPessoaById(Long.parseLong(idPessoa));
 				ordemServico.setPessoa(pessoa);
 				ordemServico.setIdOrdemServico(Long.parseLong(idOrdemServico));
-				update = ordemModel.mergeOrdemServico(ordemServico);
+				ordemServico.setItem(item.getItem());
+				update = ordemModel.persistOrdemServico(ordemServico);
 			}
 		}
+		model.addObject("status", Status.values());
 		model.addObject(Constantes.SUCCESS_UPDATE, update);
+		model.addObject("contadorProduto", ordemModel.getIndiceProduto(ordemServico.getItem()));
 		return model;
 	}
 	
@@ -106,10 +112,10 @@ public class OrdemServicoController {
 		System.out.println("saveItem(Produto produto, ItemOrdemServico item, String idOrdemServico) - enter");
 		
 		OrdemServico ordem = ordemModel.getOrdemServicoById(Long.parseLong(idOrdemServico));
-		for (Produto prod : produto.getProduto()){
+		/*for (Produto prod : produto.getProduto()){
 			item.getListProduto().add(prod);
 		}
-		ordem.getItem().add(item);
+	*/	ordem.getItem().add(item);
 		
 		System.out.println(ordem);
 		

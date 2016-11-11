@@ -21,9 +21,9 @@ public class ItemOrdemServico {
 	@SequenceGenerator(name="seq_item", sequenceName="account_item_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq_item")
 	private long idItem;
-	@ManyToMany(targetEntity=Produto.class)
-	@JoinColumn(name="produto_id",nullable=false)
-	private List<Produto> listProduto;
+	@ManyToMany(targetEntity=ProdutoItem.class)
+	@JoinColumn(name="produto_item_id",nullable=false)
+	private List<ProdutoItem> listProduto;
 	private double valorItem;
 	private String descricao;
 	
@@ -33,10 +33,10 @@ public class ItemOrdemServico {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public List<Produto> getListProduto() {
+	public List<ProdutoItem> getListProduto() {
 		return listProduto;
 	}
-	public void setListProduto(List<Produto> listProduto) {
+	public void setListProduto(List<ProdutoItem> listProduto) {
 		this.listProduto = listProduto;
 	}
 	public long getIdItem() {

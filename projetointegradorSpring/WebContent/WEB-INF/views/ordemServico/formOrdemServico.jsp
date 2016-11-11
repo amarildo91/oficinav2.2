@@ -97,6 +97,9 @@
 				componente.remove();
 			}
 			
+			/*
+			* função para selecionar itens, atribui novos e itens editados
+			*/
 			function selectItem(){
 				var validaItem = true;
 				if ($.trim($("#descricao").val()) == ""){
@@ -116,23 +119,24 @@
 				if (validaItem){
 					if (!edit){
 						contId = contItem + 1;
+						tableItem = "";
 						$("#rowZero").remove();
-						$(".tableItem tbody").append("<tr>"+
-														"<td>"+contId+"</td>"+
-														"<td>"+$("#descricao").val()+"</td>"+
-														"<td>"+$("#valorItem").val()+"</td>"+
-														"<td><a href=\"javascript:editItem($('#item"+contItem+"'));\" id='item"+contItem+"' data-contitem='"+contItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
-														"<td><span class='glyphicon glyphicon-remove'></span></td>"+
-													"</tr>");
-						
+						tableItem += "<tr>"+
+											"<td>"+contId+"</td>"+
+											"<td>"+$("#descricao").val()+"</td>"+
+											"<td>"+$("#valorItem").val()+"</td>"+
+											"<td><a href=\"javascript:editItem($('#item"+contItem+"'));\" id='item"+contItem+"' data-contitem='"+contItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
+											"<td><span class='glyphicon glyphicon-remove'></span></td>"+
+										"</tr>";
+						$(".tableItem tbody").html(tableProduto);
 						for (i=0;i<cont;i++){
 							if ($("#produto"+i).length > 0){
 								produtoItem += 
-							           "<input type='hidden' name='item["+contItem+"].listProduto["+i+"].id' value='"+$("#produto"+i).data("produto")+"' id='item"+contItem+"_produtoId"+i+"'/>"
-									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contItem+"_descricao"+i+"'/>"
-									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contItem+"_valor"+i+"'/>"
-									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].quantidade' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contItem+"_quantidade"+i+"'/>"
-									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contItem+"_idCategoria"+i+"'/>";
+							           "<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.id' value='"+$("#produto"+i).data("produto")+"' id='item"+contItem+"_produtoId"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contItem+"_descricao"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contItem+"_valor"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].quantidadeProduto' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contItem+"_quantidade"+i+"'/>"
+									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contItem+"_idCategoria"+i+"'/>";
 							}		  
 						}
 						
@@ -148,13 +152,17 @@
 						cont=0;
 						qtProdutoEstoque = [];
 						contItem++;
-					} else {
-						alert("erro");
+					} else {						
 						$("#valorItem"+contEditItem).val($("#valorItem").val());
 						$("#descricao"+contEditItem).val($("#descricao").val());
 						$("#item0").data("contproduto", cont);
+						tableItem = "<td>"+$("#itemProduto"+contEditItem).data("id")+"</td>"+
+									"<td>"+$("#descricao").val()+"</td>"+
+									"<td>"+$("#valorItem").val()+"</td>"+
+									"<td><a href=\"javascript:editItem($('#item"+contEditItem+"'));\" id='item"+contEditItem+"' data-contitem='"+contEditItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
+									"<td><span class='glyphicon glyphicon-remove'></span></td>";
+						$("#itemProduto"+contEditItem).html(tableItem);
 						for (i=0;i<cont;i++){
-						    alert(i);
 						    if ($("#item"+contEditItem+"_produtoId"+i).length > 0){
 								$("#item"+contEditItem+"_produtoId"+i).val($("#produto"+i).data("produto"));
 								$("#item"+contEditItem+"_descricao"+i).val($("#produto"+i).data("descricao"));
@@ -163,11 +171,11 @@
 								$("#item"+contEditItem+"_idCategoria"+i).val($("#produto"+i).data("categoria"));
 						    } else {
 						    	produtoItem += 
-							           "<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].id' value='"+$("#produto"+i).data("produto")+"' id='item"+contEditItem+"_produtoId"+i+"'/>"
-									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contEditItem+"_descricao"+i+"'/>"
-									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contEditItem+"_valor"+i+"'/>"
-									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].quantidade' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contEditItem+"_quantidade"+i+"'/>"
-									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contEditItem+"_idCategoria"+i+"'/>";
+							           "<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.id' value='"+$("#produto"+i).data("produto")+"' id='item"+contEditItem+"_produtoId"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contEditItem+"_descricao"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contEditItem+"_valor"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].quantidadeProduto' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contEditItem+"_quantidade"+i+"'/>"
+									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contEditItem+"_idCategoria"+i+"'/>";
 						    }	
 						}
 						$("#formItem").append(produtoItem);
@@ -176,13 +184,16 @@
 						$("#selectProd tbody tr").remove();
 						$("#gridItemModal").modal('hide');
 						produtoItem = "";
-						cont=0;
+						cont++;
 						qtProdutoEstoque = [];
 						edit = false;
 					}
 				} 
 			}
 			
+			/*
+			* função para edição de itens, possui contadores globais
+			*/
 			var contEditItem = 0;
 			var contEditItemProd = 0;
 			function editItem(componente){
@@ -191,18 +202,22 @@
 				prodCont = componente.data("contproduto");
 				contEditItem = itemCont;
 				contEditItemProd = prodCont;
+				cont =  prodCont;
 				$("#descricao").val($("#descricao"+itemCont).val());
 				$("#valorItem").val($("#valorItem"+itemCont).val());
+				tableProduto = '';
 				
 				for (i=0;i<prodCont;i++){
 					qtProdutoEstoque.push($("#item"+itemCont+"_produtoId"+i).val());
-					$("#selectProd tbody").append("<tr id='produto"+i+"' data-produto="+$("#item"+itemCont+"_produtoId"+i).val()+" data-descricao='"+$("#item"+itemCont+"_descricao"+i).val()+"' data-quantidade="+$("#item"+itemCont+"_quantidade"+i).val()+" data-valor="+$("#item"+itemCont+"_valor"+i).val()+" data-categoria="+$("#item"+itemCont+"_idCategoria"+i).val()+">"+
+					    tableProduto +=
+					    "<tr id='produto"+i+"' data-produto="+$("#item"+itemCont+"_produtoId"+i).val()+" data-descricao='"+$("#item"+itemCont+"_descricao"+i).val()+"' data-quantidade="+$("#item"+itemCont+"_quantidade"+i).val()+" data-valor="+$("#item"+itemCont+"_valor"+i).val()+" data-categoria="+$("#item"+itemCont+"_idCategoria"+i).val()+">"+
 							"<td>"+$("#item"+itemCont+"_produtoId"+i).val()+"</td>"+
 							"<td>"+$("#item"+itemCont+"_descricao"+i).val()+"</td>"+
 							"<td>"+$("#item"+itemCont+"_quantidade"+i).val()+"</td>"+
 							"<td>"+$("#item"+itemCont+"_valor"+i).val()+"</td>"+
 							"<td><a href='javascript:removeProduto($(\"#produto"+i+"\"));' data-cont="+prodCont+" data-contItem="+itemCont+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
-						"</tr>");
+						"</tr>";
+						$("#selectProd tbody").html(tableProduto);	
 				}
 				$("#gridItemModal").modal();
 			}
@@ -294,10 +309,13 @@
 	        	<label for="status"><fmt:message key="ordemServico.form.status"/></label>
 	        	<select class="form-control" id="status" name="status" required="required">
 	        		<option></option>
-        			<option value="${status[0]}">${status[0]}</option>
-        			<option value="${status[1]}">${status[1]}</option>
-        			<option value="${status[2]}">${status[2]}</option>
-        			<option value="${status[3]}">${status[3]}</option>
+			        <c:forEach items="${status}" var="st">
+			        	<c:set var="selected" value=""/>
+	        			<c:if test="${st eq ordemServico.status}">
+	        				<c:set var="selected" value="selected"/>
+	        			</c:if>
+			        	<option value="${st}" ${selected}>${st}</option>
+			        </c:forEach>
 	        	</select>
 	        </div>
 	        
@@ -317,12 +335,30 @@
 	        		<c:if test="${empty ordemServico.item}">
 	        			<tr id="rowZero"><td colspan="5"><fmt:message key="ordemServico.form.items.nenhumCadastro"/></td></tr>
 	        		</c:if>
-	        		<c:forEach items="${ordemServico.item}" var="item">
-	        			<tr>
+	        		<c:forEach items="${ordemServico.item}" var="item" varStatus="contItem">
+	        			<script>
+	        				if (contItem == 0){
+	        					contItem = ${contItem.count};
+	        				}	
+	        			</script>
+	        			<tr id='itemProduto${contItem.index}' data-id="${item.idItem}">
 	        				<td>${item.idItem}</td>
-	        				<td>${item.categoria.descricao}</td>
-	        				<td>${item.valor}</td>
+	        				<td>${item.descricao}</td>
+	        				<td>${item.valorItem}</td>
+	        				<td><a href="javascript:editItem($('#item${contItem.index}'));" id='item${contItem.index}' data-contitem='${contItem.index}' data-contproduto='${contadorProduto}'><span class='glyphicon glyphicon-pencil'></span></a></td>
 	        			</tr>
+	        			<input type='hidden' name='item[${contItem.index}].valorItem' value="${item.valorItem}" id='valorItem${contItem.index}'/>
+	        			<input type='hidden' name='item[${contItem.index}].descricao' value="${item.descricao}" id='descricao${contItem.index}'/>
+	        			<input type='hidden' name='item[${contItem.index}].idItem' value='${item.idItem}' id='idItem${contItem.index}'/>
+	        			
+	        			<c:forEach items="${item.listProduto}" var="produto" varStatus="contProduto">
+	        				<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].idProdutoItem' value='${produto.idProdutoItem}' id='item${contItem.index}_produtoIdItem${contProduto.index}'/>
+		        			<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].produto.id' value='${produto.produto.id}' id='item${contItem.index}_produtoId${contProduto.index}'/>
+						 	<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].produto.descricao' value='${produto.produto.descricao}' id='item${contItem.index}_descricao${contProduto.index}'/>
+							<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].produto.valor' value='${produto.produto.valor}' id='item${contItem.index}_valor${contProduto.index}'/>
+							<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].quantidadeProduto' value='${produto.quantidadeProduto}' id='item${contItem.index}_quantidade${contProduto.index}'/>
+							<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].produto.idCategoria' value='${produto.produto.categoria.id}' id='item${contItem.index}_idCategoria${contProduto.index}'/> 
+						</c:forEach>
 	        		</c:forEach>
 	        	</tbody>
 	        </table>	        
