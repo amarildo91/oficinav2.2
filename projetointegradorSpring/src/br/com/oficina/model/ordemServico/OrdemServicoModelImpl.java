@@ -86,7 +86,6 @@ public class OrdemServicoModelImpl {
 			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = (Date)formatter.parse(ordemServico.getData());
 			ordemServico.setDtOrdemServico(date);
-			
 			/*
 			 * valida itens de ordem de servico, os mesmos serão salvos separadamente
 			 */
@@ -95,7 +94,11 @@ public class OrdemServicoModelImpl {
 					for (int j=0;j<ordemServico.getItem().get(i).getListProduto().size();j++){
 						if (ordemServico.getItem().get(i).getListProduto().get(j).getProduto().getId() == 0){
 							ordemServico.getItem().get(i).getListProduto().remove(j);
-						} 
+						}
+						// atualiza estoque
+						Long idProduto = ordemServico.getItem().get(i).getListProduto().get(j).getProduto().getId();
+						this.updateQtProduto(idProduto, (ProdutoItem)ordemServico.getItem().get(i).getListProduto().get(j), false);
+						
 						if (ordemServico.getItem().get(i).getListProduto().get(j).getIdProdutoItem() == 0) {
 							daoPrdItem.persist(ordemServico.getItem().get(i).getListProduto().get(j));
 						} else {
@@ -108,9 +111,6 @@ public class OrdemServicoModelImpl {
 				} else {
 					daoItem.merge(ordemServico.getItem().get(i));
 				}
-				for (int j=0;j<ordemServico.getItem().get(i).getListProduto().size();j++){
-					this.updateQtProduto(ordemServico.getItem().get(i).getListProduto().get(j).getProduto(), false);
-				}
 			}
 			daoOrdem.merge(ordemServico);
 			persist = true;
@@ -119,22 +119,35 @@ public class OrdemServicoModelImpl {
 		}
 		return persist;
 	}
-	
-	public void updateQtProduto(Produto produto, boolean remove){
+	/*
+	 * Atualiza estoque de produto
+	 */
+	public void updateQtProduto(Long idProduto, ProdutoItem prdItem, boolean remove) throws Exception {
 		System.out.println("updateQtProduto(Produto produto) - enter");
 		GenericoDao<Produto> daoProd = new GenericoDao<Produto>(Produto.class);
 		try {
-			Produto produtoEstoque = em.find(Produto.class, produto.getId());
-			int qt = 0;
-			if (!remove){
-				qt = produtoEstoque.getQuantidade() - produto.getQuantidade();
-			} else {
-				qt = produtoEstoque.getQuantidade() + produto.getQuantidade();
+			Produto produtoEstoque = em.find(Produto.class, idProduto);
+			double prdItemQt = em.find(ProdutoItem.class, prdItem.getIdProdutoItem()) != null ? em.find(ProdutoItem.class, prdItem.getIdProdutoItem()).getQuantidadeProduto() : 0;
+			double qt = 0;
+			
+			// valida se produto foi alterado
+			if (prdItemQt >= 0 && prdItemQt != prdItem.getQuantidadeProduto()){
+				if (!remove){
+					qt = prdItem.getQuantidadeProduto() - prdItemQt;
+					qt = produtoEstoque.getQuantidade() - qt;
+				} else {
+					qt = produtoEstoque.getQuantidade() + prdItem.getQuantidadeProduto();
+				}
+				if (qt >= 0){
+					produtoEstoque.setQuantidade(qt);
+					daoProd.merge(produtoEstoque);
+				} else {
+					throw new Exception("erro ao atualizar estoque");
+				}
 			}
-			produtoEstoque.setQuantidade(qt);
-			daoProd.merge(produtoEstoque);
 		} catch (Exception e) {
 			System.out.println("updateQtProduto(Produto produto) - ERRO: " + e.getMessage());
+			throw new Exception("erro ao atualizar estoque");
 		}
 	}
 	

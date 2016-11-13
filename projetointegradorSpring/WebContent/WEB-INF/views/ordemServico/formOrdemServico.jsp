@@ -49,31 +49,47 @@
 
 			};
 			
+			/*
+			 * contadores globais, array identifica se o roduto já foi selecionado
+			 */
 			var cont = 0;
 			var contItem = 0;
 			var produtoItem = "";
-			var qtProdutoEstoque = [];
+			var idProdutoEstoque = [];			
 			var edit = false;
+			/*
+			 * função para selecionar produtos
+			 */
 			function selectProduto(){
-				if (qtProdutoEstoque.indexOf($("#produtoSelected").val()) < 0){										
-					if ($("#quantidade").val() <=  $("#produtoSelected option:selected").data("quantidade")){
+				if (idProdutoEstoque.indexOf($("#produtoSelected").val()) < 0){										
+					if (parseFloat($("#quantidade").val()) <=  $("#produtoSelected option:selected").data("quantidade") && ($.trim($("#quantidade").val()) != "" || $("#quantidade").val() > 0)){
 						
+						// valida se o item está sendo editado
 						if (edit){
 							cont = contEditItemProd; 
-						}
+						}						
+						/*
+						 * atribui os calores aos campos e adiciona produto ao array de validação já existentes no item 
+						 */
+						idProdutoEstoque.push($("#produtoSelected").val());
 						
-						qtProdutoEstoque.push($("#produtoSelected").val());
+						// soma o valor do produto pela quantidade
 						var valorAproximado = $("#quantidade").val() * $("#produtoSelected option:selected").data("valor");
-						var a = parseFloat($("#valorItem").val());
-						var b =  parseFloat(valorAproximado);
-						$("#valorItem").val(a + b);
+						var valorItemFloat = parseFloat($("#valorItem").val());
+						var valorAprxFloat =  parseFloat(valorAproximado);
+						var resultFloart = valorItemFloat + valorAprxFloat;  
+						$("#valorItem").val(parseFloat(resultFloart).toFixed(2));
+						
 						$("#spanProd .help-block").css("display", "none");
 						$("#spanEstoque .help-block").css("display", "none");
+						/*
+						 * monta tabela
+						 */
 						$("#selectProd tbody").append("<tr id='produto"+cont+"' data-produto="+$("#produtoSelected").val()+" data-descricao='"+$("#produtoSelected option:selected").text()+"' data-quantidade="+$("#quantidade").val()+" data-valor="+valorAproximado+" data-categoria="+$("#idCategoria").val()+">"+
 													"<td>"+$("#produtoSelected").val()+"</td>"+
 													"<td>"+$("#produtoSelected option:selected").text()+"</td>"+
 													"<td>"+$("#quantidade").val()+"</td>"+
-													"<td>"+valorAproximado+"</td>"+
+													"<td>"+parseFloat(valorAproximado).toFixed(2)+"</td>"+
 													"<td><a href='javascript:removeProduto($(\"#produto"+cont+"\"));' data-cont="+cont+" data-contItem="+contItem+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
 												"</tr>");
 						$("#idCategoria").val("");
@@ -81,20 +97,36 @@
 						$("#quantidade").val("");
 						cont++;
 					} else {
+						if ($.trim($("#quantidade").val()) == "" || $("#quantidade").val() == 0){
+							$("#quantidadeForm").addClass("has-error");
+							$("#quantidadeForm .help-block").css("display", "block");
+							return false;
+						}
 						$("#spanEstoque .help-block").css("display", "block");
 						$("#produtoSelected").val("");
 						$("#quantidade").val("");
 					}	
 				}else{
 					$("#spanExists .help-block").css("display", "block");
+						
 				}
 			}
 			
+			/*
+			 * função de remoção de produtos
+			 */
 			function removeProduto(componente){
 				valor = $("#valorItem").val() - componente.data("valor");
 				$("#valorItem").val(valor);
-				qtProdutoEstoque.splice(qtProdutoEstoque.indexOf('"+componente.data("produto");+"'));
+				valorTotal = Number($("#valorTotal").val()) + Number($("#valorItem").val());
+				$("#valorTotal").val(valorTotal);
+				idProdutoEstoque.splice(idProdutoEstoque.indexOf('"+componente.data("produto");+"'));
 				componente.remove();
+				cont -= 1;
+				// valida se o produto removido está no item em edição
+				if (edit){
+					contEditItemProd = cont; 
+				}
 			}
 			
 			/*
@@ -121,6 +153,9 @@
 						contId = contItem + 1;
 						tableItem = "";
 						$("#rowZero").remove();
+						/*
+						 * monta tabela
+						 */
 						tableItem += "<tr>"+
 											"<td>"+contId+"</td>"+
 											"<td>"+$("#descricao").val()+"</td>"+
@@ -128,7 +163,10 @@
 											"<td><a href=\"javascript:editItem($('#item"+contItem+"'));\" id='item"+contItem+"' data-contitem='"+contItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
 											"<td><span class='glyphicon glyphicon-remove'></span></td>"+
 										"</tr>";
-						$(".tableItem tbody").html(tableProduto);
+						$(".tableItem tbody").append(tableItem);
+						/*
+						 * adicina item e produtos a ordem de serviço
+						 */
 						for (i=0;i<cont;i++){
 							if ($("#produto"+i).length > 0){
 								produtoItem += 
@@ -144,24 +182,40 @@
 						$("#formItem").append("<input type='hidden' name='item["+contItem+"].descricao' value='"+$("#descricao").val()+"' id='descricao"+contItem+"'/>");
 						$("#formItem").append("<input type='hidden' name='item["+contItem+"].idItem' value='0' id='idItem"+contItem+"'/>");
 						$("#formItem").append(produtoItem);
+						
+						// atualiza valor ordem de serviço
+						valorTotal = Number($("#valorTotal").val()) + Number($("#valorItem").val());
+						$("#valorTotal").val(parseFloat(valorTotal).toFixed(2));
+						
+						// limpa formulário
 						produtoItem = "";
 						$("#descricao").val("");
 						$("#valorItem").val(0);
 						$("#selectProd tbody tr").remove();
 						$("#gridItemModal").modal('hide');
 						cont=0;
-						qtProdutoEstoque = [];
+						idProdutoEstoque = [];
 						contItem++;
-					} else {						
+					} else {
+						/*
+						 * validação de contadores para edição
+						 */
+						contId = contEditItem + 1;
 						$("#valorItem"+contEditItem).val($("#valorItem").val());
 						$("#descricao"+contEditItem).val($("#descricao").val());
 						$("#item0").data("contproduto", cont);
-						tableItem = "<td>"+$("#itemProduto"+contEditItem).data("id")+"</td>"+
+						/*
+						 * monta tabela
+						 */ 
+						tableItem = "<td>"+contId+"</td>"+
 									"<td>"+$("#descricao").val()+"</td>"+
 									"<td>"+$("#valorItem").val()+"</td>"+
 									"<td><a href=\"javascript:editItem($('#item"+contEditItem+"'));\" id='item"+contEditItem+"' data-contitem='"+contEditItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
 									"<td><span class='glyphicon glyphicon-remove'></span></td>";
 						$("#itemProduto"+contEditItem).html(tableItem);
+						/*
+						 * validação de produtos adicionados
+						 */
 						for (i=0;i<cont;i++){
 						    if ($("#item"+contEditItem+"_produtoId"+i).length > 0){
 								$("#item"+contEditItem+"_produtoId"+i).val($("#produto"+i).data("produto"));
@@ -178,24 +232,32 @@
 									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.idCategoria' value='"+$("#produto"+i).data("categoria")+"' id='item"+contEditItem+"_idCategoria"+i+"'/>";
 						    }	
 						}
+						valorTotal = valorTotalOrdem + Number($("#valorItem").val());
+						$("#valorTotal").val(parseFloat(valorTotal).toFixed(2));						
 						$("#formItem").append(produtoItem);
+						// limpa campos
 						$("#descricao").val("");
 						$("#valorItem").val(0);
 						$("#selectProd tbody tr").remove();
 						$("#gridItemModal").modal('hide');
 						produtoItem = "";
 						cont++;
-						qtProdutoEstoque = [];
-						edit = false;
+						idProdutoEstoque = [];
+						edit = false;				
+						valorTotalOrdem = 0;
 					}
 				} 
 			}
 			
-			/*
-			* função para edição de itens, possui contadores globais
-			*/
+			// contadores globais para edição de item
 			var contEditItem = 0;
 			var contEditItemProd = 0;
+			
+			// var recebe valor total ordem de serviço
+			var valorTotalOrdem = 0;
+			/*
+			* função para edição de itens
+			*/
 			function editItem(componente){
 				edit = true;
 				itemCont = componente.data("contitem");
@@ -206,9 +268,15 @@
 				$("#descricao").val($("#descricao"+itemCont).val());
 				$("#valorItem").val($("#valorItem"+itemCont).val());
 				tableProduto = '';
-				
+				valorTotalOrdem = Number($("#valorTotal").val()) - Number($("#valorItem").val());
+				if (valorTotalOrdem < 0){
+					valorTotalOrdem = 0;
+				}
+				/*
+				 * recupera table de produtos
+				 */
 				for (i=0;i<prodCont;i++){
-					qtProdutoEstoque.push($("#item"+itemCont+"_produtoId"+i).val());
+					idProdutoEstoque.push($("#item"+itemCont+"_produtoId"+i).val());
 					    tableProduto +=
 					    "<tr id='produto"+i+"' data-produto="+$("#item"+itemCont+"_produtoId"+i).val()+" data-descricao='"+$("#item"+itemCont+"_descricao"+i).val()+"' data-quantidade="+$("#item"+itemCont+"_quantidade"+i).val()+" data-valor="+$("#item"+itemCont+"_valor"+i).val()+" data-categoria="+$("#item"+itemCont+"_idCategoria"+i).val()+">"+
 							"<td>"+$("#item"+itemCont+"_produtoId"+i).val()+"</td>"+
@@ -229,7 +297,7 @@
 				$("#gridItemModal").modal();
 				produtoItem = "";
 				cont=0;
-				qtProdutoEstoque = [];
+				idProdutoEstoque = [];
 				edit = false;
 			}
 			
@@ -251,6 +319,11 @@
 				$("#produtoSelected").click(function() {
 					$("#spanExists .help-block").css("display", "none");
 				});
+				
+				$("#quantidade").click(function(){
+					$("#quantidadeForm").removeClass("has-error");
+					$("#quantidadeForm .help-block").css("display", "none");
+				})
 				
 				$("#idCategoria").change(function(){
 					$.ajax({
@@ -335,17 +408,15 @@
 	        		<c:if test="${empty ordemServico.item}">
 	        			<tr id="rowZero"><td colspan="5"><fmt:message key="ordemServico.form.items.nenhumCadastro"/></td></tr>
 	        		</c:if>
+	        		<c:set var="contador" value =""/>
 	        		<c:forEach items="${ordemServico.item}" var="item" varStatus="contItem">
-	        			<script>
-	        				if (contItem == 0){
-	        					contItem = ${contItem.count};
-	        				}	
-	        			</script>
+	        			<c:set var="contador" value ="${contItem.count}"/>
 	        			<tr id='itemProduto${contItem.index}' data-id="${item.idItem}">
-	        				<td>${item.idItem}</td>
+	        				<td>${contItem.count}</td>
 	        				<td>${item.descricao}</td>
 	        				<td>${item.valorItem}</td>
 	        				<td><a href="javascript:editItem($('#item${contItem.index}'));" id='item${contItem.index}' data-contitem='${contItem.index}' data-contproduto='${contadorProduto}'><span class='glyphicon glyphicon-pencil'></span></a></td>
+	        				<td><span class='glyphicon glyphicon-remove'></span></td>
 	        			</tr>
 	        			<input type='hidden' name='item[${contItem.index}].valorItem' value="${item.valorItem}" id='valorItem${contItem.index}'/>
 	        			<input type='hidden' name='item[${contItem.index}].descricao' value="${item.descricao}" id='descricao${contItem.index}'/>
@@ -360,6 +431,11 @@
 							<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].produto.idCategoria' value='${produto.produto.categoria.id}' id='item${contItem.index}_idCategoria${contProduto.index}'/> 
 						</c:forEach>
 	        		</c:forEach>
+	        		<script>
+	        			if (contItem == 0){
+	        				contItem = ${contador};
+	        			}	
+	        		</script>
 	        	</tbody>
 	        </table>	        
 			
@@ -445,16 +521,17 @@
 				        	</div>	
 				   		</div>
 				 	</div>
-  					<div class="col-lg-5">
+  					<div class="col-lg-5" id="quantidadeForm">
     					<div class="form-group">
     						<label for="quantidade"><fmt:message key="item.form.valor"/></label>    
 		        			<div class="input-group">
-	        					<input type="text" name="quantidade" class="form-control" id="quantidade"/>
+	        					<input type="text" name="quantidade" class="form-control" id="quantidade"/>	        					
 	        					<span class="input-group-btn">
 							        <button class="btn btn-primary" type="button" onclick="javascript:selectProduto();"><span class="glyphicon glyphicon-plus"></span>&nbsp;Adicionar</button>
-							      </span>
-	        				</div>
+							    </span>
+	        				</div>	        				
 	        			</div>
+	        			<span id='helpBlock' class='help-block' style="display:none">Quantidade inválida</span>
 	        		</div>			
 	        	</div>
 	        	<div class="has-error" id="spanExists"><span id="helpBlock" class="help-block" style="display:none"><b>Produto já foi selecionado.</b></span></div>

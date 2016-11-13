@@ -76,10 +76,9 @@ public class OrdemServicoController {
 	}
 	
 	@RequestMapping("editOrdemServicoSubmit")
-	public ModelAndView editOrdemServicoSubmit(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @RequestParam("idOrdemServico") String idOrdemServico, @Valid ItemListView item){
+	public String editOrdemServicoSubmit(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @RequestParam("idOrdemServico") String idOrdemServico, @Valid ItemListView item){
 		System.out.println("editOrdemServicoSubmit(OrdemServico ordemServico, String idPessoa, String idOrdemServico) - enter");
 		
-		ModelAndView model = new ModelAndView("ordemServico/formOrdemServico");
 		boolean update = false;
 		if (!idOrdemServico.isEmpty()){
 			if(!idPessoa.isEmpty()){
@@ -90,10 +89,7 @@ public class OrdemServicoController {
 				update = ordemModel.persistOrdemServico(ordemServico);
 			}
 		}
-		model.addObject("status", Status.values());
-		model.addObject(Constantes.SUCCESS_UPDATE, update);
-		model.addObject("contadorProduto", ordemModel.getIndiceProduto(ordemServico.getItem()));
-		return model;
+		return "redirect:ordemServico?insert=true&successMessage="+update;
 	}
 	
 	@RequestMapping(value="item", method=RequestMethod.GET)

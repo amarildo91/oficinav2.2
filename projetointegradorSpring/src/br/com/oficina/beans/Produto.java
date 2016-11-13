@@ -22,7 +22,7 @@ public class Produto {
 	private long id;
 	private String descricao;
 	private double valor;
-	private int quantidade;
+	private double quantidade;
 	@ManyToOne
 	@JoinColumn(name="categoria_id",nullable=false)
 	private CategoriaOrdemServico categoria;
@@ -53,10 +53,10 @@ public class Produto {
 	public void setValor(double valor) {
 		this.valor = valor;
 	}
-	public int getQuantidade() {
+	public double getQuantidade() {
 		return quantidade;
 	}
-	public void setQuantidade(int quantidade) {
+	public void setQuantidade(double quantidade) {
 		this.quantidade = quantidade;
 	}
 	public CategoriaOrdemServico getCategoria() {
