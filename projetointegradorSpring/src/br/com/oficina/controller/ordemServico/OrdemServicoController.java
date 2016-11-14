@@ -14,7 +14,6 @@ import br.com.oficina.beans.ItemListView;
 import br.com.oficina.beans.ItemOrdemServico;
 import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Pessoa;
-import br.com.oficina.beans.ProdutoListView;
 import br.com.oficina.beans.Status;
 import br.com.oficina.model.ordemServico.OrdemServicoModelImpl;
 import br.com.oficina.utils.Constantes;
@@ -71,7 +70,7 @@ public class OrdemServicoController {
 		model.addObject("pessoas", ordemModel.listAllPessoa());
 		model.addObject("categorias", ordemModel.listAllCategoria());
 		model.addObject("contadorProduto", ordemModel.getIndiceProduto(ordem.getItem()));
-		model.addObject("status", ordem.getStatus().values());
+		model.addObject("status", ordem.getStatus().values());		
 		return model;
 	}
 	
@@ -103,19 +102,16 @@ public class OrdemServicoController {
 		return model;
 	}
 	
-	@RequestMapping(value="/salvarItem", method=RequestMethod.POST)
-	public String saveItem(@Valid ProdutoListView produto, @Valid ItemOrdemServico item, @RequestParam("idOrdemServico") String idOrdemServico){
-		System.out.println("saveItem(Produto produto, ItemOrdemServico item, String idOrdemServico) - enter");
+	@RequestMapping("/deletarItem")
+	public String deleteItem(@RequestParam("idItem") String idItem, @RequestParam("idOrdemServico") String idOrdemServico){
+		System.out.println("deleteItem(String idItem, String idOrdemServico) - enter");
 		
-		OrdemServico ordem = ordemModel.getOrdemServicoById(Long.parseLong(idOrdemServico));
-		/*for (Produto prod : produto.getProduto()){
-			item.getListProduto().add(prod);
+		boolean delete = false;
+		if (!idItem.isEmpty() && !idOrdemServico.isEmpty()){
+			OrdemServico ordemServico = ordemModel.getOrdemServicoById(Long.parseLong(idOrdemServico));
+			delete = ordemModel.deleteItem(ordemServico, Long.parseLong(idItem));
 		}
-	*/	ordem.getItem().add(item);
-		
-		System.out.println(ordem);
-		
-		return "ordemServico/item";
+		return "redirect:ordemServico?insert=true&successMessage="+delete;
 	}
 	
 	@ResponseBody

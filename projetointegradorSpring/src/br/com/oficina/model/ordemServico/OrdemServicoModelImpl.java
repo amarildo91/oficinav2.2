@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -69,13 +71,20 @@ public class OrdemServicoModelImpl {
 		return pessoa;
 	}
 	
-	public int getIndiceProduto(List<ItemOrdemServico> item){
+	/*
+	 * calcula quantidade de produtos existentes em cada item
+	 */
+	public Map<Long, Integer> getIndiceProduto(List<ItemOrdemServico> item){
 		System.out.println("getIndiceProduto(List<ItemOrdemServico> item) - enter");
-		int indice = 0;
-		for (ItemOrdemServico itemProd : item){
-			indice = itemProd.getListProduto().size();
+		Map<Long, Integer> indiceProduto = new HashMap<Long, Integer>();
+		for (int i=0; i < item.size(); i++){
+			int indice = 0;
+			for (int j=0; j < item.get(i).getListProduto().size(); j++){
+				indice++;
+				indiceProduto.put(item.get(i).getIdItem(), indice);
+			}
 		}
-		return indice;
+		return indiceProduto;
 	}
 	
 	public boolean persistOrdemServico(OrdemServico ordemServico){
@@ -144,10 +153,19 @@ public class OrdemServicoModelImpl {
 				} else {
 					throw new Exception("erro ao atualizar estoque");
 				}
+			} else if (remove){
+				qt = produtoEstoque.getQuantidade() + prdItem.getQuantidadeProduto();
+				if (qt >= 0){
+					produtoEstoque.setQuantidade(qt);
+					daoProd.merge(produtoEstoque);
+				} else {
+					throw new Exception("erro ao atualizar estoque");
+				}
 			}
+			
 		} catch (Exception e) {
 			System.out.println("updateQtProduto(Produto produto) - ERRO: " + e.getMessage());
-			throw new Exception("erro ao atualizar estoque");
+			throw e;
 		}
 	}
 	
@@ -215,5 +233,45 @@ public class OrdemServicoModelImpl {
 			System.out.println("mergeItem(ItemOrdemServico item) - ERRO: " + e.getMessage());
 		}
 		return merge;
+	}
+	/*
+	 * delete itens ordem de serviço
+	 */
+	public boolean deleteItem(OrdemServico ordemServico, Long idItem){
+		System.out.println("deleteItem(OrdemServico ordem) - enter");
+		
+		boolean delete = false;
+		GenericoDao<ProdutoItem> daoPrdItem = new GenericoDao<ProdutoItem>(ProdutoItem.class);
+		try {
+			for (int i=0; i<ordemServico.getItem().size(); i++){
+				if (ordemServico.getItem().get(i).getIdItem() == idItem){
+					for (int j=0; j<ordemServico.getItem().get(i).getListProduto().size(); j++){
+						/*
+						 * intancia ProdutoItem para atualização de estoque
+						 * remove ProdutoItem de item e atualiza a base de dados
+						 */
+						ProdutoItem produtoItem = ordemServico.getItem().get(i).getListProduto().get(j);
+						Produto produtoRemove = ordemServico.getItem().get(i).getListProduto().get(j).getProduto();
+						ordemServico.getItem().get(i).getListProduto().remove(j);
+						daoItem.merge(ordemServico.getItem().get(i));
+						
+						// remove ProdutoItem
+						daoPrdItem.remove(produtoItem);
+						// atualiza estoque
+						this.updateQtProduto(produtoRemove.getId(), produtoItem, true);
+					}
+					// exclui item
+					ItemOrdemServico item = ordemServico.getItem().get(i);
+					ordemServico.getItem().remove(i);
+					ordemServico.setValorTotal(ordemServico.getValorTotal() - item.getValorItem());
+					daoOrdem.merge(ordemServico);
+					daoItem.removeById(item.getIdItem());
+				}
+			}
+			delete = true;
+		} catch (Exception e) {
+			System.out.println("deleteItem(OrdemServico ordem) - ERRO: "+ e.getMessage());
+		}
+		return delete;
 	}
 }

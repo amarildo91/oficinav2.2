@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:template id="text" name="text" title="Ordem de Serviço">
 	<jsp:attribute name="divBody">
 	    <script src="${pageContext.request.contextPath}/bootstrap-dist/js/jquery.min.js"></script>
@@ -62,15 +63,14 @@
 			 */
 			function selectProduto(){
 				if (idProdutoEstoque.indexOf($("#produtoSelected").val()) < 0){										
-					if (parseFloat($("#quantidade").val()) <=  $("#produtoSelected option:selected").data("quantidade") && ($.trim($("#quantidade").val()) != "" || $("#quantidade").val() > 0)){
+					if (parseFloat($("#quantidade").val()) <=  $("#produtoSelected option:selected").data("quantidade") && ($.trim($("#quantidade").val()) != "" && $("#quantidade").val() > 0)){
 						
 						// valida se o item está sendo editado
 						if (edit){
 							cont = contEditItemProd; 
 						}						
-						/*
-						 * atribui os calores aos campos e adiciona produto ao array de validação já existentes no item 
-						 */
+						
+						//  atribui os calores aos campos e adiciona produto ao array de validação já existentes no item
 						idProdutoEstoque.push($("#produtoSelected").val());
 						
 						// soma o valor do produto pela quantidade
@@ -82,14 +82,13 @@
 						
 						$("#spanProd .help-block").css("display", "none");
 						$("#spanEstoque .help-block").css("display", "none");
-						/*
-						 * monta tabela
-						 */
+						
+						// monta tabela
 						$("#selectProd tbody").append("<tr id='produto"+cont+"' data-produto="+$("#produtoSelected").val()+" data-descricao='"+$("#produtoSelected option:selected").text()+"' data-quantidade="+$("#quantidade").val()+" data-valor="+valorAproximado+" data-categoria="+$("#idCategoria").val()+">"+
 													"<td>"+$("#produtoSelected").val()+"</td>"+
 													"<td>"+$("#produtoSelected option:selected").text()+"</td>"+
-													"<td>"+$("#quantidade").val()+"</td>"+
-													"<td>"+parseFloat(valorAproximado).toFixed(2)+"</td>"+
+													"<td>"+$("#quantidade").val().replace('.', ',')+"</td>"+
+													"<td>"+parseFloat(valorAproximado).toFixed(2).replace('.', ',')+"</td>"+
 													"<td><a href='javascript:removeProduto($(\"#produto"+cont+"\"));' data-cont="+cont+" data-contItem="+contItem+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
 												"</tr>");
 						$("#idCategoria").val("");
@@ -108,7 +107,6 @@
 					}	
 				}else{
 					$("#spanExists .help-block").css("display", "block");
-						
 				}
 			}
 			
@@ -125,7 +123,14 @@
 				cont -= 1;
 				// valida se o produto removido está no item em edição
 				if (edit){
-					contEditItemProd = cont; 
+					contEditItemProd = cont;
+					i = componente.data("cont");
+					$("#item"+contEditItem+"_produtoIdItem"+i).remove();
+					$("#item"+contEditItem+"_produtoId"+i).remove();
+					$("#item"+contEditItem+"_descricao"+i).remove();
+					$("#item"+contEditItem+"_valor"+i).remove();
+					$("#item"+contEditItem+"_quantidade"+i).remove();
+					$("#item"+contEditItem+"_idCategoria"+i).remove();
 				}
 			}
 			
@@ -153,20 +158,18 @@
 						contId = contItem + 1;
 						tableItem = "";
 						$("#rowZero").remove();
-						/*
-						 * monta tabela
-						 */
+						
+						// monta tabela
 						tableItem += "<tr>"+
 											"<td>"+contId+"</td>"+
 											"<td>"+$("#descricao").val()+"</td>"+
-											"<td>"+$("#valorItem").val()+"</td>"+
+											"<td>"+$("#valorItem").val().replace('.', ',')+"</td>"+
 											"<td><a href=\"javascript:editItem($('#item"+contItem+"'));\" id='item"+contItem+"' data-contitem='"+contItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
 											"<td><span class='glyphicon glyphicon-remove'></span></td>"+
 										"</tr>";
 						$(".tableItem tbody").append(tableItem);
-						/*
-						 * adicina item e produtos a ordem de serviço
-						 */
+						
+						// adicina item e produtos a ordem de serviço
 						for (i=0;i<cont;i++){
 							if ($("#produto"+i).length > 0){
 								produtoItem += 
@@ -197,25 +200,22 @@
 						idProdutoEstoque = [];
 						contItem++;
 					} else {
-						/*
-						 * validação de contadores para edição
-						 */
+						
+						// validação de contadores para edição
 						contId = contEditItem + 1;
 						$("#valorItem"+contEditItem).val($("#valorItem").val());
 						$("#descricao"+contEditItem).val($("#descricao").val());
 						$("#item0").data("contproduto", cont);
-						/*
-						 * monta tabela
-						 */ 
+						
+						// monta tabela 
 						tableItem = "<td>"+contId+"</td>"+
 									"<td>"+$("#descricao").val()+"</td>"+
-									"<td>"+$("#valorItem").val()+"</td>"+
+									"<td>"+$("#valorItem").val().replace('.', ',')+"</td>"+
 									"<td><a href=\"javascript:editItem($('#item"+contEditItem+"'));\" id='item"+contEditItem+"' data-contitem='"+contEditItem+"' data-contproduto='"+cont+"'><span class='glyphicon glyphicon-pencil'></span></a></td>"+
 									"<td><span class='glyphicon glyphicon-remove'></span></td>";
 						$("#itemProduto"+contEditItem).html(tableItem);
-						/*
-						 * validação de produtos adicionados
-						 */
+						
+						// validação de produtos adicionados
 						for (i=0;i<cont;i++){
 						    if ($("#item"+contEditItem+"_produtoId"+i).length > 0){
 								$("#item"+contEditItem+"_produtoId"+i).val($("#produto"+i).data("produto"));
@@ -235,6 +235,7 @@
 						valorTotal = valorTotalOrdem + Number($("#valorItem").val());
 						$("#valorTotal").val(parseFloat(valorTotal).toFixed(2));						
 						$("#formItem").append(produtoItem);
+						
 						// limpa campos
 						$("#descricao").val("");
 						$("#valorItem").val(0);
@@ -268,22 +269,22 @@
 				$("#descricao").val($("#descricao"+itemCont).val());
 				$("#valorItem").val($("#valorItem"+itemCont).val());
 				tableProduto = '';
+				idProdutoEstoque = [];
 				valorTotalOrdem = Number($("#valorTotal").val()) - Number($("#valorItem").val());
 				if (valorTotalOrdem < 0){
 					valorTotalOrdem = 0;
 				}
-				/*
-				 * recupera table de produtos
-				 */
+				
+				// recupera table de produtos
 				for (i=0;i<prodCont;i++){
 					idProdutoEstoque.push($("#item"+itemCont+"_produtoId"+i).val());
 					    tableProduto +=
-					    "<tr id='produto"+i+"' data-produto="+$("#item"+itemCont+"_produtoId"+i).val()+" data-descricao='"+$("#item"+itemCont+"_descricao"+i).val()+"' data-quantidade="+$("#item"+itemCont+"_quantidade"+i).val()+" data-valor="+$("#item"+itemCont+"_valor"+i).val()+" data-categoria="+$("#item"+itemCont+"_idCategoria"+i).val()+">"+
+					    "<tr id='produto"+i+"' data-produto="+$("#item"+itemCont+"_produtoId"+i).val()+" data-descricao='"+$("#item"+itemCont+"_descricao"+i).val()+"' data-quantidade="+$("#item"+itemCont+"_quantidade"+i).val()+" data-valor="+$("#item"+itemCont+"_valor"+i).val()+" data-categoria="+$("#item"+itemCont+"_idCategoria"+i).val()+" data-cont="+i+">"+
 							"<td>"+$("#item"+itemCont+"_produtoId"+i).val()+"</td>"+
 							"<td>"+$("#item"+itemCont+"_descricao"+i).val()+"</td>"+
-							"<td>"+$("#item"+itemCont+"_quantidade"+i).val()+"</td>"+
-							"<td>"+$("#item"+itemCont+"_valor"+i).val()+"</td>"+
-							"<td><a href='javascript:removeProduto($(\"#produto"+i+"\"));' data-cont="+prodCont+" data-contItem="+itemCont+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
+							"<td>"+$("#item"+itemCont+"_quantidade"+i).val().replace('.', ',')+"</td>"+
+							"<td>"+$("#item"+itemCont+"_valor"+i).val().replace('.', ',')+"</td>"+
+							"<td><a href='javascript:removeProduto($(\"#produto"+i+"\"));' data-cont="+i+" data-contItem="+itemCont+"><span class='glyphicon glyphicon-remove'></span></a></td>"+
 						"</tr>";
 						$("#selectProd tbody").html(tableProduto);	
 				}
@@ -301,10 +302,17 @@
 				edit = false;
 			}
 			
+			function deleteItem(componente){
+				$("#delIdItem").val(componente.getAttribute("data-idItem"));
+				$("#delIdOrdemServico").val(componente.getAttribute("data-idOrdemServico"));
+				$("#gridExcluiItemModal").modal();
+			}
+			
 			$(document).ready(function(){
 				$(".modal-body").css("max-height", "500px");
 				$(".modal-body").css("overflow-y", "auto");
 				$('#valorTotal').bind('keypress',mask.money);
+				$('#quantidade').bind('keypress',mask.money);
 				
 				$("#descricao").click(function(){
 					$("#descricaoForm").removeClass("has-error");
@@ -372,7 +380,7 @@
 	        </div>
 	        <div class="form-group">
 	        	<label for="valorTotal"><fmt:message key="ordemServico.form.valorTotal"/></label>
-	        	<input type="text" name="valorTotal" class="form-control" id="valorTotal" value="${ordemServico.valorTotal}"/>
+	        	<input type="number" name="valorTotal" class="form-control" id="valorTotal" value="${ordemServico.valorTotal}" step="any"/>
 	        </div>
 	        <div class="form-group">
 	        	<label for="observacao"><fmt:message key="ordemServico.form.observacao"/></label>
@@ -411,12 +419,14 @@
 	        		<c:set var="contador" value =""/>
 	        		<c:forEach items="${ordemServico.item}" var="item" varStatus="contItem">
 	        			<c:set var="contador" value ="${contItem.count}"/>
+	        			<c:set var="valorItem" value="${fn:replace(item.valorItem, '.', ',')}"/>
+	        			
 	        			<tr id='itemProduto${contItem.index}' data-id="${item.idItem}">
 	        				<td>${contItem.count}</td>
 	        				<td>${item.descricao}</td>
-	        				<td>${item.valorItem}</td>
-	        				<td><a href="javascript:editItem($('#item${contItem.index}'));" id='item${contItem.index}' data-contitem='${contItem.index}' data-contproduto='${contadorProduto}'><span class='glyphicon glyphicon-pencil'></span></a></td>
-	        				<td><span class='glyphicon glyphicon-remove'></span></td>
+	        				<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${item.valorItem}"/></td>
+	        				<td><a href="javascript:editItem($('#item${contItem.index}'));" id='item${contItem.index}' data-contitem='${contItem.index}' data-contproduto='${contadorProduto[item.idItem]}'><span class='glyphicon glyphicon-pencil'></span></a></td>
+	        				<td><a href="javascript:void();" onclick="javascript:deleteItem(this);" data-idItem="${item.idItem}" data-idOrdemServico="${ordemServico.idOrdemServico}"><span class='glyphicon glyphicon-remove'></span></a></td>
 	        			</tr>
 	        			<input type='hidden' name='item[${contItem.index}].valorItem' value="${item.valorItem}" id='valorItem${contItem.index}'/>
 	        			<input type='hidden' name='item[${contItem.index}].descricao' value="${item.descricao}" id='descricao${contItem.index}'/>
@@ -488,18 +498,18 @@
 		      <div class="modal-header">
 		      	<input type="hidden" id="idProdutoExclud" name="id">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="gridModalLabel"><fmt:message key="ordemServico.form.pessoa.title"/></h4>
+		        <h4 class="modal-title" id="gridModalLabel"><fmt:message key="ordemServico.form.item.title"/></h4>
 		      </div>
 		      <div class="modal-body">
 		      	<div class="form-group" id="descricaoForm">
 		      		<label for="descricao" class="control-label"><fmt:message key="ordemServico.form.descricao"/></label>
 		      		<textarea class="form-control" rows="3" name="descricao" id="descricao"></textarea>
-		      		<span id='helpBlock' class='help-block' style="display:none">Preencha o campo</span>
+		      		<span id='helpBlock' class='help-block' style="display:none"><fmt:message key="ordemServico.form.erro.campoVazio"/></span>
 		      	</div>		
 				<div class="form-group" id="valorItemForm">
 				  	<label for="valorItem" class="control-label"><fmt:message key="ordemServico.form.valorItem"/></label>
 				  	<input class="form-control" type="number" name="valorItem" id="valorItem" disabled="disabled" value="0"/>
-				  	<span id='helpBlock' class='help-block' style="display:none">Preencha o campo</span>
+				  	<span id='helpBlock' class='help-block' style="display:none"><fmt:message key="ordemServico.form.erro.campoVazio"/></span>
 				</div>
 		      	<div class="form-group">
 		        	<label for="idCategoria"><fmt:message key="item.form.categoria"/></label>
@@ -514,7 +524,7 @@
 					<div class="col-lg-7">
 				   		<div class="input-group">
 				   			<div class="form-group">
-				   				<label for="idCategoria"><fmt:message key="item.form.valor"/></label>
+				   				<label for="idCategoria"><fmt:message key="ordemServico.form.produto"/></label>
 				      			<select class="form-control selectProd" id="produtoSelected" name="produtoSelected">
 				      				<option></option>
 				        		</select>
@@ -523,28 +533,28 @@
 				 	</div>
   					<div class="col-lg-5" id="quantidadeForm">
     					<div class="form-group">
-    						<label for="quantidade"><fmt:message key="item.form.valor"/></label>    
+    						<label for="quantidade"><fmt:message key="ordemServico.form.quantidade"/></label>    
 		        			<div class="input-group">
-	        					<input type="text" name="quantidade" class="form-control" id="quantidade"/>	        					
+	        					<input type="number" name="quantidade" class="form-control" id="quantidade"/>	        					
 	        					<span class="input-group-btn">
-							        <button class="btn btn-primary" type="button" onclick="javascript:selectProduto();"><span class="glyphicon glyphicon-plus"></span>&nbsp;Adicionar</button>
+							        <button class="btn btn-primary" type="button" onclick="javascript:selectProduto();"><span class="glyphicon glyphicon-plus"></span>&nbsp;<fmt:message key="ordemServico.form.adicionar"/></button>
 							    </span>
 	        				</div>	        				
 	        			</div>
-	        			<span id='helpBlock' class='help-block' style="display:none">Quantidade inválida</span>
+	        			<span id='helpBlock' class='help-block' style="display:none"><fmt:message key="ordemServico.form.erro.qtInvalido"/></span>
 	        		</div>			
 	        	</div>
-	        	<div class="has-error" id="spanExists"><span id="helpBlock" class="help-block" style="display:none"><b>Produto já foi selecionado.</b></span></div>
-	        	<div class="has-error" id="spanEstoque"><span id="helpBlock" class="help-block" style="display:none">Não há a quantidade solicitada em estoque.</span></div>
+	        	<div class="has-error" id="spanExists"><span id="helpBlock" class="help-block" style="display:none"><b><fmt:message key="ordemServico.form.erro.prdSelecionado"/></b></span></div>
+	        	<div class="has-error" id="spanEstoque"><span id="helpBlock" class="help-block" style="display:none"><fmt:message key="ordemServico.form.erro.qtIndisponivel"/></span></div>
 	        	<hr>
-	        	<div class="has-error" id="spanProd"><span id="helpBlock" class="help-block" style="display:none">Insira produtos na tabela</span></div>
+	        	<div class="has-error" id="spanProd"><span id="helpBlock" class="help-block" style="display:none"><fmt:message key="ordemServico.form.erro.semProdutos"/></span></div>
 	        	<table class="table table-striped table-bordered" id="selectProd">
 				  	<thead>
 				  		<tr>
-				  			<td><b>#</b></td>
-				  			<td><b>Produto</b></td>
-				  			<td><b>Quantidade</b></td>
-				  			<td><b>Valor</b></td>
+				  			<td><b><fmt:message key="ordemServico.form.produto.id"/></b></td>
+				  			<td><b><fmt:message key="ordemServico.form.produto.nome"/></b></td>
+				  			<td><b><fmt:message key="ordemServico.form.produto.quantidade"/></b></td>
+				  			<td><b><fmt:message key="ordemServico.form.produto.valor"/></b></td>
 				  			<td></td>
 				  		</tr>
 				  	</thead>
@@ -553,30 +563,34 @@
 				  </table>			
 			  </div>
 		      <div class="modal-footer">
-		      	<button type="button" class="btn btn-primary" onclick="javascript:selectItem();"><fmt:message key="produto.modal.button.nao"/></button>
+		      	<button type="button" class="btn btn-primary" onclick="javascript:selectItem();"><fmt:message key="ordemServico.form.salvar"/></button>
 		      </div>
 		    </div>
 		  </div>
 		</div>
 		
-		<!-- Modal Estoque insuficiente -->
-		<div id="gridEstoqueModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel" aria-hidden="true">
-		  <div class="modal-dialog" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		      	<input type="hidden" id="idCompromissoExclud" name="id">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="gridModalLabel"><fmt:message key="home.titulo"/></h4>
-		      </div>
-		      <div class="modal-body">
-			      	<h4 class="modal-title" id="gridModalLabel" align="center"><img src="${pageContext.request.contextPath}/bootstrap-dist/img/warning-icon.png" width="50px"><fmt:message key="home.motal.titulo.excluir"/></h4>
+		<!-- Modal deletar item ordem serviço -->
+		<form:form action="${pageContext.request.contextPath}/deletarItem" method="post">
+			<div id="gridExcluiItemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel" aria-hidden="true">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			      	<input type="hidden" id="idCompromissoExclud" name="id">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="gridModalLabel"><fmt:message key="ordemServico.form.item.title"/></h4>
 			      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="home.modal.button.nao"/></button>
-		        <button type="submit" class="btn btn-primary"><fmt:message key="home.modal.button.sim"/></button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
+			      <div class="modal-body">
+				   	<h4 class="modal-title" id="gridModalLabel" align="center"><img src="${pageContext.request.contextPath}/bootstrap-dist/img/warning-icon.png" width="50px"><fmt:message key="home.motal.titulo.excluir"/></h4>
+				   	<input type="hidden" id="delIdItem" name="idItem"/>
+				   	<input type="hidden" id="delIdOrdemServico" name="idOrdemServico"/>
+				  </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="home.modal.button.nao"/></button>
+			        <button type="submit" class="btn btn-primary"><fmt:message key="home.modal.button.sim"/></button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</form:form>	
 	</jsp:attribute>
 </tag:template>	
