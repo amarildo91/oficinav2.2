@@ -30,7 +30,7 @@ public class OrdemServicoModelImpl {
 		System.out.println("listAllOrdemServico() - enter");
 		List<OrdemServico> listOS = new ArrayList<OrdemServico>();
 		try {
-			listOS = em.createQuery("from OrdemServico").getResultList();
+			listOS = em.createQuery("from OrdemServico order by id").getResultList();
 		} catch (Exception e) {
 			System.out.println("listAllOrdemServico() - ERRO: " + e.getMessage());
 		}
@@ -220,6 +220,33 @@ public class OrdemServicoModelImpl {
 			System.out.println("buscarProduto(Long id) - ERRO: " +e.getMessage());
 		}
 		return option;
+	}
+	
+	/*
+	 * método exclui produtoItem em chamada ajax
+	 */
+	public String excluirProdutoItem(Long id, Long idItem){
+		Long idProdutoItem = em.find(ProdutoItem.class, id) != null ? em.find(ProdutoItem.class, id).getIdProdutoItem() : 0;
+		GenericoDao<ProdutoItem> daoProd = new GenericoDao<ProdutoItem>(ProdutoItem.class);
+		int success = 0;
+		int exists = 0;
+		try{
+			if (idProdutoItem > 0){
+				exists = 1;
+				ItemOrdemServico item = em.find(ItemOrdemServico.class, idItem);
+				for (int i=0; i < item.getListProduto().size(); i++){
+					if (item.getListProduto().get(i).getIdProdutoItem() == id){
+						item.getListProduto().remove(i);
+						daoItem.merge(item);
+					}
+				}
+				daoProd.removeById(idProdutoItem);
+				success = 1;
+			}
+		} catch (Exception e){
+			System.out.println("excluirProduto(Long id) - ERRO: " + e.getMessage());
+		}
+		return "success="+success+";exists="+exists;
 	}
 	
 	public boolean mergeItem(ItemOrdemServico item){

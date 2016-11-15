@@ -10,18 +10,14 @@
 				var table = document.getElementById(_id);
 				var ele;  
 				for (var r = 1; r < table.rows.length; r++){  	
-				   ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");  
+				   ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
 				   if (ele.toLowerCase().indexOf(suche)>=0 )   
 				    	 table.rows[r].style.display = '';  	
 				   else 
 					  	 table.rows[r].style.display = 'none';  
 		       	 }	
 			 }
-			 
-			function excluiRegistro(id){
-				$("#idPessoaExclud").val(id);
-				$("#gridExcluiModal").modal();
-			}
+			
 		</script>	
 		<h1><fmt:message key="ordemServico.title"/></h1>
 		<br>
@@ -35,9 +31,25 @@
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
 			    	</div>
 				</td>
-				<td><b><fmt:message key="ordemServico.cliente"/></b></td>
+				<td>
+					<div class="navbar-form navbar-left">
+						<b><fmt:message key="ordemServico.status"/></b>
+			        	<select onchange="filter(this, 'lista', '2')" class="form-control">
+			        		<option></option>
+			        		<c:forEach items="${status}" var="statusOrdem">
+			        			<option value="${statusOrdem}">${statusOrdem}</option>
+			        		</c:forEach>
+			        	</select>
+			    	</div>				
+				</td>
+				<td>
+					<div class="navbar-form navbar-left">
+						<b><fmt:message key="ordemServico.cliente"/></b>
+			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '3')"/>
+			    	</div>
+				</td>
 				<td><b><fmt:message key="ordemServico.data"/></b></td>
-				<td></td><td></td>
+				<td></td>
 			</tr>
 			
 			<c:if test="${empty ordemServicos}">
@@ -50,10 +62,10 @@
 				<tr>
 					<td>${ordemServico.idOrdemServico}</td>
 					<td>${ordemServico.observacao}</td>
+					<td>${ordemServico.status}</td>
 					<td>${ordemServico.pessoa.nome}</td>
 					<td><fmt:formatDate value="${ordemServico.dtOrdemServico}" pattern="dd/MM/yyyy"/></td>
-					<td><a href='${pageContext.request.contextPath}/editOrdemServico?id=${ordemServico.idOrdemServico}'><span class="glyphicon glyphicon-pencil"></span></a></td>
-					<td><a href="#" onclick="javascript:excluiRegistro(${ordemServico.idOrdemServico});"><span class="glyphicon glyphicon-remove"></span></a></td>
+					<td><a href='${pageContext.request.contextPath}/editOrdemServico?id=${ordemServico.idOrdemServico}'><span class="glyphicon glyphicon-pencil"></span></a></td>					
 				</tr>
 			</c:forEach>
 		</table>

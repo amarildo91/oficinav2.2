@@ -115,23 +115,61 @@
 			 */
 			function removeProduto(componente){
 				valor = $("#valorItem").val() - componente.data("valor");
-				$("#valorItem").val(valor);
-				valorTotal = Number($("#valorTotal").val()) + Number($("#valorItem").val());
-				$("#valorTotal").val(valorTotal);
+				$("#valorItem").val(parseFloat(valor).toFixed(2));
 				idProdutoEstoque.splice(idProdutoEstoque.indexOf('"+componente.data("produto");+"'));
-				componente.remove();
 				cont -= 1;
 				// valida se o produto removido está no item em edição
 				if (edit){
 					contEditItemProd = cont;
 					i = componente.data("cont");
-					$("#item"+contEditItem+"_produtoIdItem"+i).remove();
-					$("#item"+contEditItem+"_produtoId"+i).remove();
-					$("#item"+contEditItem+"_descricao"+i).remove();
-					$("#item"+contEditItem+"_valor"+i).remove();
-					$("#item"+contEditItem+"_quantidade"+i).remove();
-					$("#item"+contEditItem+"_idCategoria"+i).remove();
-				}
+					
+					// chamada ajax para remover  produtoItem 
+					if ($("#item"+contEditItem+"_produtoIdItem"+i).val() != null){
+						data = {};
+						data["id"] = $("#item"+contEditItem+"_produtoIdItem"+i).val();
+						data["idItem"] = $("#idItem"+contEditItem).val();
+						
+						$.ajax({
+							url:"doExcluirProduto",
+							data: data,
+							method: "POST",
+							dataType: "text",
+							success: function(retorno){
+								retorno = retorno.split(";");
+								success = Boolean(parseInt(retorno[0].split("=")[1]));
+								exists  = Boolean(parseInt(retorno[1].split("=")[1]));
+								if (exists == true){
+									if (success == true){
+										$("#gridSucessoRemovModal").modal();
+									} else {
+										$("#gridErrorRemovModal").modal();
+										return false;
+									}
+								}			
+								componente.remove();
+								$("#item"+contEditItem+"_produtoIdItem"+i).remove();
+								$("#item"+contEditItem+"_produtoId"+i).remove();
+								$("#item"+contEditItem+"_descricao"+i).remove();
+								$("#item"+contEditItem+"_valor"+i).remove();
+								$("#item"+contEditItem+"_quantidade"+i).remove();
+								$("#item"+contEditItem+"_idCategoria"+i).remove();	
+							},
+							error: function (request, status, error) {
+							        return false;
+							}						
+						});
+					} else {
+						componente.remove();
+						$("#item"+contEditItem+"_produtoIdItem"+i).remove();
+						$("#item"+contEditItem+"_produtoId"+i).remove();
+						$("#item"+contEditItem+"_descricao"+i).remove();
+						$("#item"+contEditItem+"_valor"+i).remove();
+						$("#item"+contEditItem+"_quantidade"+i).remove();
+						$("#item"+contEditItem+"_idCategoria"+i).remove();
+					}	
+				} else {				
+					componente.remove();
+				} 
 			}
 			
 			/*
@@ -158,6 +196,7 @@
 						contId = contItem + 1;
 						tableItem = "";
 						$("#rowZero").remove();
+						$("#valorItem").val(parseFloat($("#valorItem").val()).toFixed(2));
 						
 						// monta tabela
 						tableItem += "<tr>"+
@@ -172,8 +211,9 @@
 						// adicina item e produtos a ordem de serviço
 						for (i=0;i<cont;i++){
 							if ($("#produto"+i).length > 0){
-								produtoItem += 
-							           "<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.id' value='"+$("#produto"+i).data("produto")+"' id='item"+contItem+"_produtoId"+i+"'/>"
+								produtoItem +=
+									   "<input type='hidden' name='item["+contItem+"].listProduto["+i+"].idProdutoItem' value='0' id='item"+contItem+"_produtoIdItem"+i+"'/>"
+							          +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.id' value='"+$("#produto"+i).data("produto")+"' id='item"+contItem+"_produtoId"+i+"'/>"
 									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contItem+"_descricao"+i+"'/>"
 									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].produto.valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contItem+"_valor"+i+"'/>"
 									  +"<input type='hidden' name='item["+contItem+"].listProduto["+i+"].quantidadeProduto' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contItem+"_quantidade"+i+"'/>"
@@ -203,6 +243,7 @@
 						
 						// validação de contadores para edição
 						contId = contEditItem + 1;
+						$("#valorItem").val(parseFloat($("#valorItem").val()).toFixed(2));
 						$("#valorItem"+contEditItem).val($("#valorItem").val());
 						$("#descricao"+contEditItem).val($("#descricao").val());
 						$("#item0").data("contproduto", cont);
@@ -225,7 +266,8 @@
 								$("#item"+contEditItem+"_idCategoria"+i).val($("#produto"+i).data("categoria"));
 						    } else {
 						    	produtoItem += 
-							           "<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.id' value='"+$("#produto"+i).data("produto")+"' id='item"+contEditItem+"_produtoId"+i+"'/>"
+						    		   "<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].idProdutoItem' value='0' id='item"+contEditItem+"_produtoIdItem"+i+"'/>"
+							          +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.id' value='"+$("#produto"+i).data("produto")+"' id='item"+contEditItem+"_produtoId"+i+"'/>"
 									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.descricao' value='"+$("#produto"+i).data("descricao")+"' id='item"+contEditItem+"_descricao"+i+"'/>"
 									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].produto.valor' value='"+$("#produto"+i).data("valor")+"' id='item"+contEditItem+"_valor"+i+"'/>"
 									  +"<input type='hidden' name='item["+contEditItem+"].listProduto["+i+"].quantidadeProduto' value='"+$("#produto"+i).data("quantidade")+"' id='item"+contEditItem+"_quantidade"+i+"'/>"

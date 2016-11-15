@@ -29,6 +29,7 @@ public class OrdemServicoController {
 		
 		ModelAndView model = new ModelAndView("ordemServico/listOrdemServico");
 		model.addObject("ordemServicos", ordemModel.listAllOrdemServico());
+		model.addObject("status", Status.values());
 		if (insert){
 			model.addObject(Constantes.SUCCESS_INSERT , successMessage);
 		}
@@ -123,5 +124,13 @@ public class OrdemServicoController {
 		Long idCategoria = Long.parseLong(ajaxRequest[1]);
 		String produtos = ordemModel.buscarProduto(idCategoria);
 		return produtos;
+	}
+	
+	@RequestMapping("/doExcluirProduto")
+	public String  doExcluirProduto(@RequestParam Long id, @RequestParam Long idItem){		
+		System.out.println("doExcluirProduto(Long id, Long idItem) - enter");
+				
+		String retorno = ordemModel.excluirProdutoItem(id, idItem);
+		return retorno;
 	}
 }
