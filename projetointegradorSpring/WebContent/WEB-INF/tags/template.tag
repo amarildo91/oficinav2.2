@@ -76,7 +76,7 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.produto"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><fmt:message key="menu.produto.manutencao"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/manutencaoProduto"><fmt:message key="menu.produto.manutencao"/></a></li>
                                     <li><a href="${pageContext.request.contextPath}/produto"><fmt:message key="menu.produto.adicionar"/></a></li>
                                     <li><a href="${pageContext.request.contextPath}/categoria"><fmt:message key="menu.produto.categoria"/></a></li>
                                 </ul>

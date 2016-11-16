@@ -33,7 +33,7 @@ public class ProdutoModelImpl {
 		EntityManager em = FabricaConexao.getEntityManager();
 		List<Produto> listProduto = new ArrayList<Produto>();
 		try {
-			listProduto = em.createQuery("from Produto").getResultList();
+			listProduto = em.createQuery("from Produto order by id").getResultList();
 		} catch (Exception e) {
 			System.out.println("listAllProdutos() - ERRO: " + e.getMessage());
 		}
@@ -87,6 +87,23 @@ public class ProdutoModelImpl {
 			System.out.println("removeProdutoById(Long id) - ERRO: " + e.getMessage());
 		}
 		return remove;
+	}
+	
+	public double getQuantidadeEstoque(Long id, double qtAdicaoProduto){
+		System.out.println("getQuantidadeEstoque(Long id, double qtAdicaoProduto) - enter");
+		
+		EntityManager em = FabricaConexao.getEntityManager();
+		double quantidade = 0.0;
+		try {
+			Produto produto = em.find(Produto.class, id);
+			if (produto != null){
+				quantidade = produto.getQuantidade();
+			}
+			quantidade += qtAdicaoProduto;
+		} catch (Exception e) {
+			System.out.println("getQuantidadeEstoque(Long id, double qtAdicaoProduto) - ERRO: " +e.getMessage());
+		}
+		return quantidade;
 	}
 
 }

@@ -67,5 +67,28 @@ public class ProdutoController {
 		model.addObject("produtos", produtoModel.listAllProdutos());
 		return model;
 	}
+	
+	@RequestMapping("/manutencaoProduto")
+	public ModelAndView manutencaoProduto(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert){
+		System.out.println("produto manutencaoProduto(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert) - enter");
+		
+		ModelAndView model = new ModelAndView("produto/manutencao");
+		model.addObject("categorias", produtoModel.listAllCategorias());
+		model.addObject("produtos", produtoModel.listAllProdutos());
+		if (insert){
+			model.addObject(Constantes.SUCCESS_INSERT , successMessage);
+		}
+		return model;
+	}
+	
+	@RequestMapping(value="/editProdutoManutencao", method=RequestMethod.POST)
+	public String editProdutoManutencao(@Valid Produto produto){
+		System.out.println("editProdutoManutencao(Produto produto) - enter");
+		
+		double quantidade = produtoModel.getQuantidadeEstoque(produto.getId(), produto.getQuantidade());
+		produto.setQuantidade(quantidade);
+		boolean update = produtoModel.editProduto(produto);
+		return "redirect:manutencaoProduto?insert=true&successMessage="+update;
+	}
 
 }

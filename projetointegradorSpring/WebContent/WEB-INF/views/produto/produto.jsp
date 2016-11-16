@@ -28,7 +28,7 @@
 			 		v = new String(Number(v));
 			 		var len = v.length;
 			 		if (1== len)
-			 			v = v.replace(/(\d)/,"0,.$1");
+			 			v = v.replace(/(\d)/,"0.$1");
 			 		else if (2 == len)
 			 			v = v.replace(/(\d)/,"0.$1");
 			 		else if (len > 2) {
@@ -70,7 +70,7 @@
 			<tr>
 				<td><b><fmt:message key="produto.id"/></b></td>
 				<td>
-					<div class="navbar-form navbar-left">
+					<div>
 						<b><fmt:message key="produto.descricao"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
 			    	</div></td>

@@ -26,13 +26,13 @@
 			<tr>
 				<td><b><fmt:message key="ordemServico.id"/></b></td>
 				<td>
-					<div class="navbar-form navbar-left">
+					<div>
 						<b><fmt:message key="ordemServico.descricao"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
 			    	</div>
 				</td>
 				<td>
-					<div class="navbar-form navbar-left">
+					<div>
 						<b><fmt:message key="ordemServico.status"/></b>
 			        	<select onchange="filter(this, 'lista', '2')" class="form-control">
 			        		<option></option>
@@ -43,7 +43,7 @@
 			    	</div>				
 				</td>
 				<td>
-					<div class="navbar-form navbar-left">
+					<div>
 						<b><fmt:message key="ordemServico.cliente"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '3')"/>
 			    	</div>
