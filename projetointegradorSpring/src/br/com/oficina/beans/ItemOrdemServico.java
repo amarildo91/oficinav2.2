@@ -22,7 +22,7 @@ public class ItemOrdemServico {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq_item")
 	private long idItem;
 	@ManyToMany(targetEntity=ProdutoItem.class)
-	@JoinColumn(name="produto_item_id",nullable=false)
+	@JoinColumn(name="produto_item_id")
 	private List<ProdutoItem> listProduto;
 	private double valorItem;
 	private String descricao;

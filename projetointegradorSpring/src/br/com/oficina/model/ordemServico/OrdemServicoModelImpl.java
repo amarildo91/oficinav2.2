@@ -147,22 +147,9 @@ public class OrdemServicoModelImpl {
 				} else {
 					qt = produtoEstoque.getQuantidade() + prdItem.getQuantidadeProduto();
 				}
-				if (qt >= 0){
-					produtoEstoque.setQuantidade(qt);
-					daoProd.merge(produtoEstoque);
-				} else {
-					throw new Exception("erro ao atualizar estoque");
-				}
-			} else if (remove){
-				qt = produtoEstoque.getQuantidade() + prdItem.getQuantidadeProduto();
-				if (qt >= 0){
-					produtoEstoque.setQuantidade(qt);
-					daoProd.merge(produtoEstoque);
-				} else {
-					throw new Exception("erro ao atualizar estoque");
-				}
-			}
-			
+				produtoEstoque.setQuantidade(qt);
+				daoProd.merge(produtoEstoque);		
+			}			
 		} catch (Exception e) {
 			System.out.println("updateQtProduto(Produto produto) - ERRO: " + e.getMessage());
 			throw e;

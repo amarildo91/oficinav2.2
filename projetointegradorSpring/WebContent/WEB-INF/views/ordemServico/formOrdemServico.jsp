@@ -62,12 +62,16 @@
 			 * função para selecionar produtos
 			 */
 			function selectProduto(){
+				$("#spanEstoque .help-block").css("display", "none");
 				if (idProdutoEstoque.indexOf($("#produtoSelected").val()) < 0){										
-					if (parseFloat($("#quantidade").val()) <=  $("#produtoSelected option:selected").data("quantidade") && ($.trim($("#quantidade").val()) != "" && $("#quantidade").val() > 0)){
+					if (parseFloat($("#quantidade").val()) >  $("#produtoSelected option:selected").data("quantidade")){
+						$("#spanEstoque .help-block").css("display", "block");
+					} 
+					if ($.trim($("#quantidade").val()) != "" && $("#quantidade").val() > 0){
 						
 						// valida se o item está sendo editado
 						if (edit){
-							cont = contEditItemProd; 
+							cont = contEditItemProd != null ? contEditItemProd : 0; 
 						}						
 						
 						//  atribui os calores aos campos e adiciona produto ao array de validação já existentes no item
@@ -81,7 +85,6 @@
 						$("#valorItem").val(parseFloat(resultFloart).toFixed(2));
 						
 						$("#spanProd .help-block").css("display", "none");
-						$("#spanEstoque .help-block").css("display", "none");
 						
 						// monta tabela
 						$("#selectProd tbody").append("<tr id='produto"+cont+"' data-produto="+$("#produtoSelected").val()+" data-descricao='"+$("#produtoSelected option:selected").text()+"' data-quantidade="+$("#quantidade").val()+" data-valor="+valorAproximado+" data-categoria="+$("#idCategoria").val()+">"+
@@ -96,14 +99,10 @@
 						$("#quantidade").val("");
 						cont++;
 					} else {
-						if ($.trim($("#quantidade").val()) == "" || $("#quantidade").val() == 0){
-							$("#quantidadeForm").addClass("has-error");
-							$("#quantidadeForm .help-block").css("display", "block");
-							return false;
-						}
-						$("#spanEstoque .help-block").css("display", "block");
-						$("#produtoSelected").val("");
-						$("#quantidade").val("");
+						$("#quantidadeForm").addClass("has-error");
+						$("#quantidadeForm .help-block").css("display", "block");
+						return false;
+						
 					}	
 				}else{
 					$("#spanExists .help-block").css("display", "block");
@@ -176,6 +175,7 @@
 			* função para selecionar itens, atribui novos e itens editados
 			*/
 			function selectItem(){
+				$("#spanEstoque .help-block").css("display", "none");
 				var validaItem = true;
 				if ($.trim($("#descricao").val()) == ""){
 					$("#descricaoForm").addClass("has-error");
@@ -396,7 +396,7 @@
 		
 		<c:set var="acao" value="${pageContext.request.contextPath}/cadastrarOrdemServico"/>
 		<c:if test="${ordemServico.idOrdemServico gt 0}">
-			<c:set var="acao" value="${pageContext.request.contextPath}/editOrdemServicoSubmit"/>
+			<c:set var="acao" value="${pageContext.request.contextPath}/editOrdemServicoSubmit"/>			
 		</c:if>
 		
 		<form:form action="${acao}" method="post" id="formItem">
@@ -483,17 +483,19 @@
 							<input type='hidden' name='item[${contItem.index}].listProduto[${contProduto.index}].produto.idCategoria' value='${produto.produto.categoria.id}' id='item${contItem.index}_idCategoria${contProduto.index}'/> 
 						</c:forEach>
 	        		</c:forEach>
-	        		<script>
-	        			if (contItem == 0){
-	        				contItem = ${contador};
-	        			}	
-	        		</script>
 	        	</tbody>
 	        </table>	        
-			
+			<script>
+      			if (contItem == 0){
+      				contItem = ${contador};
+      			}	
+      		</script>
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary"><fmt:message key="ordemServico.form.salvar"/></button>
 				<a class="btn btn-default" href="${pageContext.request.contextPath}/ordemServico"><fmt:message key="ordemServico.form.button.listagem"/></a>
+				<c:if test="${ordemServico.idOrdemServico gt 0}">
+					<a class="btn btn-default" href="${pageContext.request.contextPath}/ordemServicoPrint?id=${ordemServico.idOrdemServico}"target="_blank" title="Imprimir"><fmt:message key="ordemServico.form.button.imprimir"/>&nbsp;<span class="glyphicon glyphicon-print"></span></a>
+				</c:if>					
 			</div>
 		</form:form>	
 		

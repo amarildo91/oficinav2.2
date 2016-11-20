@@ -47,7 +47,7 @@
 		<br><br>
 		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gridInsertModal"><fmt:message key="categoria.button"/></button>
 		
-		<!-- Modal insert !-->
+		<!-- Modal insert -->
 		<form:form action="${pageContext.request.contextPath}/cadastrarCategoria" method="post">
 			 <div id="gridInsertModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel" aria-hidden="true">
 			  <div class="modal-dialog" role="document">
@@ -71,7 +71,7 @@
 			</div>
 		</form:form>
 		
-		<!-- Modal edit!! -->
+		<!-- Modal edit -->
 		<form:form action="${pageContext.request.contextPath}/editarCategoria" method="post">
 			 <div id="gridEditModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel" aria-hidden="true">
 			  <div class="modal-dialog" role="document">

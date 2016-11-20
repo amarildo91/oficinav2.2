@@ -126,6 +126,7 @@ public class OrdemServicoController {
 		return produtos;
 	}
 	
+	
 	@RequestMapping("/doExcluirProduto")
 	public String  doExcluirProduto(@RequestParam Long id, @RequestParam Long idItem){		
 		System.out.println("doExcluirProduto(Long id, Long idItem) - enter");
@@ -133,4 +134,14 @@ public class OrdemServicoController {
 		String retorno = ordemModel.excluirProdutoItem(id, idItem);
 		return retorno;
 	}
+	
+	
+	@RequestMapping(value="/ordemServicoPrint", method=RequestMethod.GET)
+	public ModelAndView ordemServicoPrint(@RequestParam("id") Long id) {
+		System.out.println("ordemServicoPrint(Long id) - enter");
+		
+		OrdemServico ordem = ordemModel.getOrdemServicoById(id);
+		return new ModelAndView("pdfViewOS", "ordemServico", ordem);
+	}
+	
 }

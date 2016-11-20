@@ -48,8 +48,7 @@
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '3')"/>
 			    	</div>
 				</td>
-				<td><b><fmt:message key="ordemServico.data"/></b></td>
-				<td></td>
+				<td colspan=3><b><fmt:message key="ordemServico.data"/></b></td>
 			</tr>
 			
 			<c:if test="${empty ordemServicos}">
@@ -65,7 +64,8 @@
 					<td>${ordemServico.status}</td>
 					<td>${ordemServico.pessoa.nome}</td>
 					<td><fmt:formatDate value="${ordemServico.dtOrdemServico}" pattern="dd/MM/yyyy"/></td>
-					<td><a href='${pageContext.request.contextPath}/editOrdemServico?id=${ordemServico.idOrdemServico}'><span class="glyphicon glyphicon-pencil"></span></a></td>					
+					<td><a href='${pageContext.request.contextPath}/editOrdemServico?id=${ordemServico.idOrdemServico}'><span class="glyphicon glyphicon-pencil"></span></a></td>
+					<td><a href='${pageContext.request.contextPath}/ordemServicoPrint?id=${ordemServico.idOrdemServico}' target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print"></span></a></td>					
 				</tr>
 			</c:forEach>
 		</table>

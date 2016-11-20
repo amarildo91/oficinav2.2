@@ -38,7 +38,7 @@ public class CategoriaController {
 		
 		boolean result = false;
 	    result = categoriaModel.persistCategoria(categoria);
-		return "resirect:categoria?insert=true&successMessage="+result;
+		return "redirect:categoria?insert=true&successMessage="+result;
 	}
 	
 	@RequestMapping(value="/editarCategoria", method=RequestMethod.POST)
