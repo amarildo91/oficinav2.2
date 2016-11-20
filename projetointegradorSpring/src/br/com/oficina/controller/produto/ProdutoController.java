@@ -17,11 +17,11 @@ public class ProdutoController {
 	
 	static ProdutoModelImpl produtoModel = new ProdutoModelImpl(); 
 	
-	@RequestMapping("/produto")
+	@RequestMapping("/protect/produto")
 	public ModelAndView begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert){
 		System.out.println("produto begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert) - enter");
 		
-		ModelAndView model = new ModelAndView("produto/produto");
+		ModelAndView model = new ModelAndView("protect/produto/produto");
 		model.addObject("categorias", produtoModel.listAllCategorias());
 		model.addObject("produtos", produtoModel.listAllProdutos());
 		if (insert){
@@ -30,31 +30,31 @@ public class ProdutoController {
 		return model;
 	}
 	
-	@RequestMapping(value="/cadastrarProduto", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/cadastrarProduto", method=RequestMethod.POST)
 	public String cadastrarProduto(@Valid Produto produto){
 		System.out.println("cadastrarProduto(Produto produto) - enter");
 		
 		boolean insert;
 		insert =  produtoModel.persistProduto(produto);
-		return "redirect:produto?insert=true&successMessage="+insert;
+		return "redirect:/protect/produto?insert=true&successMessage="+insert;
 	}
 	
-	@RequestMapping(value="/editProduto", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/editProduto", method=RequestMethod.POST)
 	public ModelAndView editProduto(@Valid Produto produto){
 		System.out.println("editProduto(Produto produto) - enter");
 		
-		ModelAndView model = new ModelAndView("produto/produto");
+		ModelAndView model = new ModelAndView("protect/produto/produto");
 		model.addObject(Constantes.SUCCESS_UPDATE, produtoModel.editProduto(produto));
 		model.addObject("categorias", produtoModel.listAllCategorias());
 		model.addObject("produtos", produtoModel.listAllProdutos());
 		return model;
 	}
 	
-	@RequestMapping(value="/produto/delete", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/produto/delete", method=RequestMethod.POST)
 	public ModelAndView deleteProduto(@RequestParam("id") String id){
 		System.out.println("deleteProduto(String id) - enter");
 		
-		ModelAndView model = new ModelAndView("produto/produto");
+		ModelAndView model = new ModelAndView("protect/produto/produto");
 		boolean result = false;
 		if (!id.isEmpty()){
 			result = produtoModel.removeProdutoById(Long.parseLong(id));
@@ -68,11 +68,11 @@ public class ProdutoController {
 		return model;
 	}
 	
-	@RequestMapping("/manutencaoProduto")
+	@RequestMapping("/protect/manutencaoProduto")
 	public ModelAndView manutencaoProduto(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert){
 		System.out.println("produto manutencaoProduto(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert) - enter");
 		
-		ModelAndView model = new ModelAndView("produto/manutencao");
+		ModelAndView model = new ModelAndView("protect/produto/manutencao");
 		model.addObject("categorias", produtoModel.listAllCategorias());
 		model.addObject("produtos", produtoModel.listAllProdutos());
 		if (insert){
@@ -81,14 +81,14 @@ public class ProdutoController {
 		return model;
 	}
 	
-	@RequestMapping(value="/editProdutoManutencao", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/editProdutoManutencao", method=RequestMethod.POST)
 	public String editProdutoManutencao(@Valid Produto produto){
 		System.out.println("editProdutoManutencao(Produto produto) - enter");
 		
 		double quantidade = produtoModel.getQuantidadeEstoque(produto.getId(), produto.getQuantidade());
 		produto.setQuantidade(quantidade);
 		boolean update = produtoModel.editProduto(produto);
-		return "redirect:manutencaoProduto?insert=true&successMessage="+update;
+		return "redirect:/protect/manutencaoProduto?insert=true&successMessage="+update;
 	}
 
 }

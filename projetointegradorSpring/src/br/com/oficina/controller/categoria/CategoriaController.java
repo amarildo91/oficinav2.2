@@ -19,11 +19,11 @@ public class CategoriaController {
 
 	static CategoriaModelImpl categoriaModel = new CategoriaModelImpl();
 	
-	@RequestMapping("/categoria")
+	@RequestMapping("/protect/categoria")
 	public ModelAndView begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert){
 		System.out.println("categoria begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert) - enter");
 		
-		ModelAndView model = new ModelAndView("categoria/categoria");
+		ModelAndView model = new ModelAndView("protect/categoria/categoria");
 		List<CategoriaOrdemServico> categorias = categoriaModel.listAllCategorias();
 		model.addObject("categorias", categorias);
 		if (insert){
@@ -32,20 +32,20 @@ public class CategoriaController {
 		return model;
 	}
 	
-	@RequestMapping(value="/cadastrarCategoria", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/cadastrarCategoria", method=RequestMethod.POST)
 	public String cadastrarCategoria(@Valid CategoriaOrdemServico categoria){
 		System.out.println("cadastrarCategoria(CategoriaOrdemServico categoria) - enter");
 		
 		boolean result = false;
 	    result = categoriaModel.persistCategoria(categoria);
-		return "redirect:categoria?insert=true&successMessage="+result;
+		return "redirect:protect/categoria?insert=true&successMessage="+result;
 	}
 	
-	@RequestMapping(value="/editarCategoria", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/editarCategoria", method=RequestMethod.POST)
 	public ModelAndView editarCategoria(@Valid CategoriaOrdemServico categoria){
 		System.out.println("editarCategoria(CategoriaOrdemServico categoria) - enter");
 		
-		ModelAndView model = new ModelAndView("categoria/categoria");
+		ModelAndView model = new ModelAndView("protect/categoria/categoria");
 		boolean result = false;
 	    result = categoriaModel.editCategoria(categoria);
 		List<CategoriaOrdemServico> categorias = categoriaModel.listAllCategorias();
@@ -55,11 +55,11 @@ public class CategoriaController {
 		return model;
 	}
 	
-	@RequestMapping(value="/categoria/delete", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/categoria/delete", method=RequestMethod.POST)
 	public ModelAndView delete(@RequestParam("id") String id){
 		System.out.println("categoria delete(String id) - enter");
 		
-		ModelAndView model = new ModelAndView("categoria/categoria");
+		ModelAndView model = new ModelAndView("protect/categoria/categoria");
 		boolean result = false;
 		if (!id.isEmpty()){
 			result = categoriaModel.removeCategoriaById(Long.parseLong(id));

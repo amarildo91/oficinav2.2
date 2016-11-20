@@ -19,11 +19,11 @@ public class HomeController {
 
 	static HomeModelImpl homeModel = new HomeModelImpl();	
 	
-	@RequestMapping("/home")
+	@RequestMapping("/protect/home")
 	public ModelAndView begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert){
 		System.out.println("begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert) - enter");
 		
-		ModelAndView model = new ModelAndView("home");
+		ModelAndView model = new ModelAndView("protect/home");
 		List<Compromisso> comp = homeModel.getAllCompromissoList();
 		model.addObject("compromissos", comp);
 		if (insert){
@@ -32,21 +32,21 @@ public class HomeController {
 		return model;
 	}
 	
-	@RequestMapping(value="/agendarCompromisso", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/agendarCompromisso", method=RequestMethod.POST)
 	public String	agendarCompromisso(@Valid Compromisso compromisso){
 		System.out.println("agendarCompromisso(Compromisso compromisso) - enter");
 		
 		boolean insert = false;
 		insert = homeModel.persistCompromisso(compromisso);
-		return "redirect:home?insert=true&successMessage="+insert;
+		return "redirect:/protect/home?insert=true&successMessage="+insert;
 	}
 	
-	@RequestMapping(value="/home/delete", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/home/delete", method=RequestMethod.POST)
 	public ModelAndView delete(@RequestParam("id") String id){
 		System.out.println("delete(String id) - enter");
 		
 		boolean removido = false;
-		ModelAndView model = new ModelAndView("/home");
+		ModelAndView model = new ModelAndView("/protect/home");
 		if (id != null){
 			removido = homeModel.removeById(Long.parseLong(id));
 		}		
@@ -57,11 +57,11 @@ public class HomeController {
 		return model;
 	}
 	
-	@RequestMapping(value="/editarCompromisso", method=RequestMethod.POST)
+	@RequestMapping(value="/protect/editarCompromisso", method=RequestMethod.POST)
 	public ModelAndView	editarCompromisso(@Valid Compromisso compromisso){
 		System.out.println("editarCompromisso(Compromisso compromisso) - enter");
 		
-		ModelAndView model = new ModelAndView("home");
+		ModelAndView model = new ModelAndView("protect/home");
 		boolean result = homeModel.editCompromisso(compromisso);
 		List<Compromisso> comp = homeModel.getAllCompromissoList();
 		model.addObject("compromissos", comp);
@@ -69,11 +69,11 @@ public class HomeController {
 		return model;
 	}
 	
-	@RequestMapping("/home/listaTodos")
+	@RequestMapping("/protect/home/listaTodos")
 	public ModelAndView listaTodos(){
 		System.out.println("listaTodos() - enter");
 		
-		ModelAndView model = new ModelAndView("home");
+		ModelAndView model = new ModelAndView("protect/home");
 		List<Compromisso> comp = homeModel.getAllCompromisso();
 		model.addObject("compromissos", comp);
 		return model;

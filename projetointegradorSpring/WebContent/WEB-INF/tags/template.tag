@@ -44,11 +44,11 @@
 		                    <span class="icon-bar"></span>
 		                    <span class="icon-bar"></span>
 		                </button>
-                        <a class="navbar-brand" href="${pageContext.request.contextPath}/home"><b>Oficina RC</b></a>
+                        <a class="navbar-brand" href="${pageContext.request.contextPath}/protect/home"><b>Oficina RC</b></a>
                     </div>
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li><a href="${pageContext.request.contextPath}/home"><fmt:message key="menu.home"/></a></li>
+                            <li><a href="${pageContext.request.contextPath}/protect/home"><fmt:message key="menu.home"/></a></li>
                              <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.relatorio"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
@@ -61,7 +61,7 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.ordemServico"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/ordemServico"><fmt:message key="menu.ordemServico.manutencao"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/ordemServico"><fmt:message key="menu.ordemServico.manutencao"/></a></li>
                                     <li><a href="#"><fmt:message key="menu.ordemServico.categoria"/></a></li>
                                     <li><a href="#"><fmt:message key="menu.ordemServico.inserir"/></a></li>
                                 </ul>
@@ -76,22 +76,22 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.produto"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/manutencaoProduto"><fmt:message key="menu.produto.manutencao"/></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/produto"><fmt:message key="menu.produto.adicionar"/></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/categoria"><fmt:message key="menu.produto.categoria"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/manutencaoProduto"><fmt:message key="menu.produto.manutencao"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/produto"><fmt:message key="menu.produto.adicionar"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/categoria"><fmt:message key="menu.produto.categoria"/></a></li>
                                 </ul>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.cadastroCliente"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#"><fmt:message key="menu.cadastroCliente.inserir"/></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/pessoa"><fmt:message key="menu.cadastroCliente.manutencao"/></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/cidade"><fmt:message key="menu.cadastroCliente.cidade"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/pessoa"><fmt:message key="menu.cadastroCliente.manutencao"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/cidade"><fmt:message key="menu.cadastroCliente.cidade"/></a></li>
                                 </ul>
                             </li>
                         </ul> 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> <fmt:message key="menu.logout"/></a></li>
+                            <li><a href="${pageContext.request.contextPath}/login"><span class="glyphicon glyphicon-log-out"></span> <fmt:message key="menu.logout"/></a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div><!--/.container-fluid -->

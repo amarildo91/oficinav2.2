@@ -23,11 +23,11 @@ public class OrdemServicoController {
 
 	static OrdemServicoModelImpl ordemModel = new OrdemServicoModelImpl();
 	
-	@RequestMapping("/ordemServico")
+	@RequestMapping("/protect/ordemServico")
 	public ModelAndView begin(@RequestParam(required=false) boolean successMessage, @RequestParam(required=false) boolean insert){
 		System.out.println("OrdemServico begin(boolean successMessage, boolean insert) - enter");
 		
-		ModelAndView model = new ModelAndView("ordemServico/listOrdemServico");
+		ModelAndView model = new ModelAndView("protect/ordemServico/listOrdemServico");
 		model.addObject("ordemServicos", ordemModel.listAllOrdemServico());
 		model.addObject("status", Status.values());
 		if (insert){
@@ -36,17 +36,17 @@ public class OrdemServicoController {
 		return model;
 	}	
 	
-	@RequestMapping("/formOrdemServico")
+	@RequestMapping("/protect/formOrdemServico")
 	public ModelAndView formOrdemServico(){
 		System.out.println("formOrdemServico() - enter");
-		ModelAndView model = new ModelAndView("ordemServico/formOrdemServico", "ordemServico", new OrdemServico());
+		ModelAndView model = new ModelAndView("protect/ordemServico/formOrdemServico", "ordemServico", new OrdemServico());
 		model.addObject("pessoas", ordemModel.listAllPessoa());
 		model.addObject("categorias", ordemModel.listAllCategoria());
 		model.addObject("status", Status.values());
 		return model;
 	}
 	
-	@RequestMapping("/cadastrarOrdemServico")
+	@RequestMapping("/protect/cadastrarOrdemServico")
 	public String cadastrarOrdemServico(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @Valid ItemListView item){
 		System.out.println("cadastrarOrdemServico(OrdemServico ordemServico, String idPessoa) - enter");
 		
@@ -57,15 +57,15 @@ public class OrdemServicoController {
 			ordemServico.setItem(item.getItem());
 			insert = ordemModel.persistOrdemServico(ordemServico);
 		}
-		return "redirect:ordemServico?insert=true&successMessage="+insert;
+		return "redirect:/protect/ordemServico?insert=true&successMessage="+insert;
 	}
 	
 	@SuppressWarnings("static-access")
-	@RequestMapping(value="editOrdemServico", method=RequestMethod.GET)
+	@RequestMapping(value="protect/editOrdemServico", method=RequestMethod.GET)
 	public ModelAndView editOrdemServico(@RequestParam("id") String id){
 		System.out.println("editOrdemServico(String id) - enter");
 		
-		ModelAndView model = new ModelAndView("ordemServico/formOrdemServico");
+		ModelAndView model = new ModelAndView("protect/ordemServico/formOrdemServico");
 		OrdemServico ordem = ordemModel.getOrdemServicoById(Long.parseLong(id));
 		model.addObject("ordemServico", ordem);
 		model.addObject("pessoas", ordemModel.listAllPessoa());
@@ -75,7 +75,7 @@ public class OrdemServicoController {
 		return model;
 	}
 	
-	@RequestMapping("editOrdemServicoSubmit")
+	@RequestMapping("protect/editOrdemServicoSubmit")
 	public String editOrdemServicoSubmit(@Valid OrdemServico ordemServico, @RequestParam("idPessoa") String idPessoa, @RequestParam("idOrdemServico") String idOrdemServico, @Valid ItemListView item){
 		System.out.println("editOrdemServicoSubmit(OrdemServico ordemServico, String idPessoa, String idOrdemServico) - enter");
 		
@@ -89,7 +89,7 @@ public class OrdemServicoController {
 				update = ordemModel.persistOrdemServico(ordemServico);
 			}
 		}
-		return "redirect:ordemServico?insert=true&successMessage="+update;
+		return "redirect:/protect/ordemServico?insert=true&successMessage="+update;
 	}
 	
 	@RequestMapping(value="item", method=RequestMethod.GET)
@@ -103,7 +103,7 @@ public class OrdemServicoController {
 		return model;
 	}
 	
-	@RequestMapping("/deletarItem")
+	@RequestMapping("/protect/deletarItem")
 	public String deleteItem(@RequestParam("idItem") String idItem, @RequestParam("idOrdemServico") String idOrdemServico){
 		System.out.println("deleteItem(String idItem, String idOrdemServico) - enter");
 		
@@ -112,11 +112,11 @@ public class OrdemServicoController {
 			OrdemServico ordemServico = ordemModel.getOrdemServicoById(Long.parseLong(idOrdemServico));
 			delete = ordemModel.deleteItem(ordemServico, Long.parseLong(idItem));
 		}
-		return "redirect:ordemServico?insert=true&successMessage="+delete;
+		return "redirect:/protect/ordemServico?insert=true&successMessage="+delete;
 	}
 	
 	@ResponseBody
-	@RequestMapping("/buscarProduto")
+	@RequestMapping("/protect/buscarProduto")
 	public String  buscarProduto(@RequestBody String id){		
 		System.out.println("buscarProduto(String id) - enter");
 			
@@ -127,7 +127,7 @@ public class OrdemServicoController {
 	}
 	
 	
-	@RequestMapping("/doExcluirProduto")
+	@RequestMapping("/protect/doExcluirProduto")
 	public String  doExcluirProduto(@RequestParam Long id, @RequestParam Long idItem){		
 		System.out.println("doExcluirProduto(Long id, Long idItem) - enter");
 				
@@ -136,7 +136,7 @@ public class OrdemServicoController {
 	}
 	
 	
-	@RequestMapping(value="/ordemServicoPrint", method=RequestMethod.GET)
+	@RequestMapping(value="/protect/ordemServicoPrint", method=RequestMethod.GET)
 	public ModelAndView ordemServicoPrint(@RequestParam("id") Long id) {
 		System.out.println("ordemServicoPrint(Long id) - enter");
 		
