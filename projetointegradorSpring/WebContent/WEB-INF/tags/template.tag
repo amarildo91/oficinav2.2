@@ -91,7 +91,7 @@
                             </li>
                         </ul> 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="${pageContext.request.contextPath}/login"><span class="glyphicon glyphicon-log-out"></span> <fmt:message key="menu.logout"/></a></li>
+                            <li><a href="${pageContext.request.contextPath}/j_spring_security_logout"><span class="glyphicon glyphicon-log-out"></span> <fmt:message key="menu.logout"/></a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div><!--/.container-fluid -->

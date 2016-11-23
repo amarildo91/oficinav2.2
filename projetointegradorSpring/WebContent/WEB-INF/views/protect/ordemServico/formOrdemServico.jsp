@@ -494,7 +494,7 @@
 				<button type="submit" class="btn btn-primary"><fmt:message key="ordemServico.form.salvar"/></button>
 				<a class="btn btn-default" href="${pageContext.request.contextPath}/protect/ordemServico"><fmt:message key="ordemServico.form.button.listagem"/></a>
 				<c:if test="${ordemServico.idOrdemServico gt 0}">
-					<a class="btn btn-default" href="${pageContext.request.contextPath}/protect/ordemServicoPrint?id=${ordemServico.idOrdemServico}"target="_blank" title="Imprimir"><fmt:message key="ordemServico.form.button.imprimir"/>&nbsp;<span class="glyphicon glyphicon-print"></span></a>
+					<a class="btn btn-default" href="${pageContext.request.contextPath}/protect/ordemServicoPrint?id=${ordemServico.idOrdemServico}"target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print"></span>&nbsp;<fmt:message key="ordemServico.form.button.imprimir"/></a>
 				</c:if>					
 			</div>
 		</form:form>	

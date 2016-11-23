@@ -70,7 +70,7 @@
 			</c:forEach>
 		</table>
 		<br><br>
-		<button type="button" class="btn btn-primary" onclick="javascript:window.location.href='${pageContext.request.contextPath}/formOrdemServico'"><fmt:message key="ordemServico.button.cadastrar"/></button>
+		<button type="button" class="btn btn-primary" onclick="javascript:window.location.href='${pageContext.request.contextPath}/protect/formOrdemServico'"><fmt:message key="ordemServico.button.cadastrar"/></button>
 		
 		<!-- Modal excluir -->
 		<form:form action="${pageContext.request.contextPath}/protect/ordemServico/delete" method="post">

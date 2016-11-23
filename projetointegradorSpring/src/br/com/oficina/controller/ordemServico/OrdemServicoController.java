@@ -1,4 +1,4 @@
-package br.com.oficina.controller.ordemServico;
+package br.com.oficina.controller.ordemservico;
 
 import javax.validation.Valid;
 
@@ -15,7 +15,7 @@ import br.com.oficina.beans.ItemOrdemServico;
 import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Pessoa;
 import br.com.oficina.beans.Status;
-import br.com.oficina.model.ordemServico.OrdemServicoModelImpl;
+import br.com.oficina.model.ordemservico.OrdemServicoModelImpl;
 import br.com.oficina.utils.Constantes;
 
 @Controller

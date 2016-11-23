@@ -11,7 +11,7 @@
         <session-management session-authentication-error-url="/login?error"> 
     		<concurrency-control max-sessions="1" expired-url="/login?error" error-if-maximum-exceeded="false"/>
 		</session-management>
-		<logout logout-success-url="/login" invalidate-session="true"/>		
+		<logout logout-success-url="/login" logout-url="/j_spring_security_logout" invalidate-session="true"/>		
     </http>
    
    <authentication-manager>

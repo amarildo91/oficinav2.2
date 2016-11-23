@@ -1,4 +1,4 @@
-package br.com.oficina.model.ordemServico;
+package br.com.oficina.model.ordemservico;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
