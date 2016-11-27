@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.oficina.beans.ItemListView;
-import br.com.oficina.beans.ItemOrdemServico;
 import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Pessoa;
-import br.com.oficina.beans.Status;
 import br.com.oficina.model.ordemservico.OrdemServicoModelImpl;
 import br.com.oficina.utils.Constantes;
+import br.com.oficina.utils.StatusEnum;
 
 @Controller
 public class OrdemServicoController {
@@ -29,7 +28,8 @@ public class OrdemServicoController {
 		
 		ModelAndView model = new ModelAndView("protect/ordemServico/listOrdemServico");
 		model.addObject("ordemServicos", ordemModel.listAllOrdemServico());
-		model.addObject("status", Status.values());
+		model.addObject("status", StatusEnum.values());
+		model.addObject("statusFinalizado", StatusEnum.FINALIZADO);
 		if (insert){
 			model.addObject(Constantes.SUCCESS_INSERT , successMessage);
 		}
@@ -42,7 +42,7 @@ public class OrdemServicoController {
 		ModelAndView model = new ModelAndView("protect/ordemServico/formOrdemServico", "ordemServico", new OrdemServico());
 		model.addObject("pessoas", ordemModel.listAllPessoa());
 		model.addObject("categorias", ordemModel.listAllCategoria());
-		model.addObject("status", Status.values());
+		model.addObject("status", StatusEnum.values());
 		return model;
 	}
 	
@@ -92,17 +92,6 @@ public class OrdemServicoController {
 		return "redirect:/protect/ordemServico?insert=true&successMessage="+update;
 	}
 	
-	@RequestMapping(value="item", method=RequestMethod.GET)
-	public ModelAndView item(@RequestParam("id") String id){
-		System.out.println("item(String id) - enter");
-		
-		ModelAndView model = new ModelAndView("ordemServico/item", "item", new ItemOrdemServico());
-		model.addObject("categorias", ordemModel.listAllCategoria());
-		model.addObject("produtos", ordemModel.listAllProduto());
-		model.addObject("idOrdemServico", id);
-		return model;
-	}
-	
 	@RequestMapping("/protect/deletarItem")
 	public String deleteItem(@RequestParam("idItem") String idItem, @RequestParam("idOrdemServico") String idOrdemServico){
 		System.out.println("deleteItem(String idItem, String idOrdemServico) - enter");
@@ -126,7 +115,6 @@ public class OrdemServicoController {
 		return produtos;
 	}
 	
-	
 	@RequestMapping("/protect/doExcluirProduto")
 	public String  doExcluirProduto(@RequestParam Long id, @RequestParam Long idItem){		
 		System.out.println("doExcluirProduto(Long id, Long idItem) - enter");
@@ -134,7 +122,6 @@ public class OrdemServicoController {
 		String retorno = ordemModel.excluirProdutoItem(id, idItem);
 		return retorno;
 	}
-	
 	
 	@RequestMapping(value="/protect/ordemServicoPrint", method=RequestMethod.GET)
 	public ModelAndView ordemServicoPrint(@RequestParam("id") Long id) {
@@ -144,4 +131,18 @@ public class OrdemServicoController {
 		return new ModelAndView("pdfViewOS", "ordemServico", ordem);
 	}
 	
+	@RequestMapping("/protect/formNFRedirect")
+	public String finalizaStatus(@RequestParam("id") Long id){
+		System.out.println("finalizaStatus(Long id) - enter");
+		
+		OrdemServico ordem = ordemModel.getOrdemServicoById(id);
+		ordem.setStatus(StatusEnum.FINALIZADO);
+		ordem.setData(ordem.getDtOrdemServico().toString());
+		boolean update = ordemModel.persistOrdemServico(ordem); 
+		if (update){
+			return "redirect:/protect/formNotaFiscal?id="+ordem.getIdOrdemServico();
+		} else {
+			return "redirect:/protect/ordemServico?insert=true&successMessage=false";
+		}	
+	}
 }

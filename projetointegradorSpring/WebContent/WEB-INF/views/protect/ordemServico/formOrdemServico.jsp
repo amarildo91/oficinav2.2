@@ -466,7 +466,7 @@
 	        			<tr id='itemProduto${contItem.index}' data-id="${item.idItem}">
 	        				<td>${contItem.count}</td>
 	        				<td>${item.descricao}</td>
-	        				<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${item.valorItem}"/></td>
+	        				<td><fmt:formatNumber type="number" minFractionDigits="2" value="${item.valorItem}"/></td>
 	        				<td><a href="javascript:editItem($('#item${contItem.index}'));" id='item${contItem.index}' data-contitem='${contItem.index}' data-contproduto='${contadorProduto[item.idItem]}'><span class='glyphicon glyphicon-pencil'></span></a></td>
 	        				<td><a href="javascript:void();" onclick="javascript:deleteItem(this);" data-idItem="${item.idItem}" data-idOrdemServico="${ordemServico.idOrdemServico}"><span class='glyphicon glyphicon-remove'></span></a></td>
 	        			</tr>
@@ -523,7 +523,7 @@
 			   			<c:forEach items="${pessoas}" var="pessoa">
 		        			<tr>
 		        				<td>${pessoa.id}</td>
-		        				<td>${pessoa.nome} - ${pessoa.cpf}</td>
+		        				<td>${pessoa.nome} - ${pessoa.cpfCnpj}</td>
 		        				<td><a data-id="${pessoa.id}" data-nome="${pessoa.nome}" href="#" onclick="javascript:selectPessoa(this);"><span class="glyphicon glyphicon-ok"></span></a></td>
 		        			</tr>
 		        		</c:forEach>

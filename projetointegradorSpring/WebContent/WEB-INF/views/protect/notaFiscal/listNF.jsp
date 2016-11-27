@@ -24,17 +24,22 @@
 		<table class="table table-striped" id="lista">
 			
 			<tr>
-				<td><b><fmt:message key="nf.id"/></b></td>
+				<td width="100">
+					<div>
+						<b><fmt:message key="nf.id"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '0')"/>
+					</div>	
+				</td>
 				<td>
 					<div>
 						<b><fmt:message key="nf.cliente"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
 			    	</div>
 				</td>
-				<td>
+				<td width="150">
 					<div>
 						<b><fmt:message key="nf.dtEmissao"/></b>
-			        	
+			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar data" onKeyUp="filter(this, 'lista', '2')"/>
 			    	</div>				
 				</td>
 				<td>
@@ -42,7 +47,8 @@
 						<b><fmt:message key="nf.valor"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '3')"/>
 			    	</div>
-				</td>				
+				</td>
+				<td colspan=2></td>		
 			</tr>
 			
 			<c:if test="${empty notaFiscal}">
@@ -56,13 +62,12 @@
 					<td>${nf.id}</td>
 					<td>${nf.ordemServico.pessoa.nome}</td>	
 					<td><fmt:formatDate value="${nf.dtEmissao}" pattern="dd/MM/yyyy"/></td>
-					<td>${nf.vlTotal}</td>									
+					<td align="right"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${nf.vlTotal}"/></td>									
 					<td><a href='${pageContext.request.contextPath}/protect/editNotaFiscal?id=${nf.id}'><span class="glyphicon glyphicon-pencil"></span></a></td>
 					<td><a href='${pageContext.request.contextPath}/protect/notaFiscalPrint?id=${nf.id}' target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print"></span></a></td>					
 				</tr>
 			</c:forEach>
 		</table>
-		<br><br>
-		<button type="button" class="btn btn-primary" onclick="javascript:window.location.href='${pageContext.request.contextPath}/protect/formNotaFiscal'"><fmt:message key="nf.button.gerar"/></button>
+		
 	</jsp:attribute>
 </tag:template>			

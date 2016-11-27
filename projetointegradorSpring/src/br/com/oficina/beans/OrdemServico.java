@@ -17,6 +17,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import br.com.oficina.utils.StatusEnum;
+
 @Entity
 @Table(name="ordem_servico")
 public class OrdemServico {
@@ -38,7 +40,7 @@ public class OrdemServico {
 	@ManyToMany(targetEntity=ItemOrdemServico.class)
 	@JoinColumn(name="item_id",nullable=false)
 	private List<ItemOrdemServico> item;
-	private Status status;
+	private StatusEnum status;
 	
 	@Transient
     private String data;
@@ -93,10 +95,10 @@ public class OrdemServico {
 	public void setItem(List<ItemOrdemServico> item) {
 		this.item = item;
 	}
-	public Status getStatus() {
+	public StatusEnum getStatus() {
 		return status;
 	}
-	public void setStatus(Status status) {
+	public void setStatus(StatusEnum status) {
 		this.status = status;
 	}
 

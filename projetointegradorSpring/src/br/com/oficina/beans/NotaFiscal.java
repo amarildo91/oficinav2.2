@@ -14,6 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import br.com.oficina.utils.NFStatusEnum;
+
 @Entity
 @Table(name="nota_fiscal")
 public class NotaFiscal {
@@ -25,9 +27,9 @@ public class NotaFiscal {
 	private long id;
 	@OneToOne
 	private OrdemServico ordemServico;
-	@OneToOne
-	private Pessoa pessoa;
+	private double vlIss;	
 	private double vlTotal;
+	private NFStatusEnum status;
 	
 	@Column(name="dt_emissao")
 	@Temporal(TemporalType.DATE)
@@ -70,12 +72,12 @@ public class NotaFiscal {
 	}
 	public void setOrdemServico(OrdemServico ordemServico) {
 		this.ordemServico = ordemServico;
+	}	
+	public double getVlIss() {
+		return vlIss;
 	}
-	public Pessoa getPessoa() {
-		return pessoa;
-	}
-	public void setPessoa(Pessoa pessoa) {
-		this.pessoa = pessoa;
+	public void setVlIss(double vlIss) {
+		this.vlIss = vlIss;
 	}
 	public double getVlTotal() {
 		return vlTotal;
@@ -88,5 +90,11 @@ public class NotaFiscal {
 	}
 	public void setDtEmissao(Date dtEmissao) {
 		this.dtEmissao = dtEmissao;
+	}
+	public NFStatusEnum getStatus() {
+		return status;
+	}
+	public void setStatus(NFStatusEnum status) {
+		this.status = status;
 	}
 }	

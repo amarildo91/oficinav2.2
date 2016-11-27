@@ -57,6 +57,8 @@ public class PessoaModelImpl {
 			Date date = (Date)formatter.parse(pessoa.getData());
 			pessoa.setDtNascimento(date);
 			
+			pessoa.setCpfCnpj(pessoa.getCpfCnpj().replaceAll("[.-]", ""));
+			
 			Cidade cidade = em.find(Cidade.class, endereco.getIdCidade());
 			endereco.setCidade(cidade);
 			daoEnd.persist(endereco);

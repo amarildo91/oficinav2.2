@@ -24,7 +24,7 @@
 	});
 </script>
 
-<body>
+<body style="background:url(bootstrap-dist/img/bg-login.png); background-size:100%; background-repeat: no-repeat;">
 	<div class="container-fluid">
 		<div id="loginbox" style="margin-top: 50px;"
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">

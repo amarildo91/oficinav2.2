@@ -38,13 +38,13 @@ public class PDFOrdemServicoBuilder extends AbstractITextPdfView {
 		Font fontTitle = new Font();
 		fontTitle.setFamily(FontFactory.TIMES_BOLD);
 		fontTitle.setSize(22.0F);
-		doc.add(new Paragraph("Oficina RC - Serralheria", fontTitle));
+		doc.add(new Paragraph("ROBERTO CLERI SOUZA OLIVEIRA 96821906068", fontTitle));
 		
 		Font fontSub = new Font();
 		fontSub.setFamily(FontFactory.TIMES_BOLD);
 		fontSub.setSize(8.0F);
-		doc.add(new Paragraph("Av. Flores da Cunha, 1677 - Borghetti - Carazinho - RS", fontSub));
-		doc.add(new Paragraph("E-mail: robertocleri@hotmail.com  Contato:(54)99996-6226", fontSub));
+		doc.add(new Paragraph("FLORES DA CUNHA , 4001 - SUBSL - BORGHETTI, CARAZINHO, RS - CEP:99500000", fontSub));
+		doc.add(new Paragraph("E-mail: robertocleri@hotmail.com  Fone/Fax:(54)99967-7726", fontSub));
 		
 		doc.add(new Paragraph("ORDEM DE SERVIÇO Nº "+ordem.getIdOrdemServico(), fontTitle));
 		doc.add(new Paragraph("______________________________________________________________________________"));
@@ -67,9 +67,9 @@ public class PDFOrdemServicoBuilder extends AbstractITextPdfView {
 		tableClinte.addCell(new Phrase("Contato: " + formatString(cliente.getTelefone(), "(##)#####-####"), fontText));
 		
 		tableClinte.addCell(new Phrase("Cidade: " + cidade.getNome() + " - " + cidade.getUf().getSigla(), fontText));
-		tableClinte.addCell(new Phrase("CPF: " + cliente.getCpf(), fontText));
+		tableClinte.addCell(new Phrase("CPF: " + cliente.getCpfCnpj(), fontText));
 		
-		tableClinte.addCell(new Phrase("Endereço: " + cliente.getEndereco().getRua(), fontText));
+		tableClinte.addCell(new Phrase("Endereço: " + cliente.getEndereco().getRua()+", "+cliente.getEndereco().getBairro(), fontText));
 		tableClinte.addCell(new Phrase("CEP: " + cliente.getEndereco().getCep(), fontText));
 		
 		doc.add(tableClinte);

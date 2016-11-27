@@ -30,7 +30,7 @@ public class OrdemServicoModelImpl {
 		System.out.println("listAllOrdemServico() - enter");
 		List<OrdemServico> listOS = new ArrayList<OrdemServico>();
 		try {
-			listOS = em.createQuery("from OrdemServico order by id").getResultList();
+			listOS = em.createQuery("from OrdemServico order by id desc").getResultList();
 		} catch (Exception e) {
 			System.out.println("listAllOrdemServico() - ERRO: " + e.getMessage());
 		}

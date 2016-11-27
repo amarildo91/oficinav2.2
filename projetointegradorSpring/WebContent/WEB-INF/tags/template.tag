@@ -35,7 +35,7 @@
 
         
             <!-- Static navbar -->
-            <nav class="navbar navbar-inverse">
+            <nav class="navbar navbar-inverse navbar-fixed-top">
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
@@ -62,29 +62,25 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.ordemServico"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="${pageContext.request.contextPath}/protect/ordemServico"><fmt:message key="menu.ordemServico.manutencao"/></a></li>
-                                    <li><a href="#"><fmt:message key="menu.ordemServico.categoria"/></a></li>
-                                    <li><a href="#"><fmt:message key="menu.ordemServico.inserir"/></a></li>
                                 </ul>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.notaFiscal"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><fmt:message key="menu.notaFiscal.gerar"/></a></li>
-                                    <li><a href="#"><fmt:message key="menu.notaFiscal.listagem"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/notaFiscal"><fmt:message key="menu.notaFiscal.listagem"/></a></li>
                                 </ul>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.produto"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/protect/manutencaoProduto"><fmt:message key="menu.produto.manutencao"/></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/protect/produto"><fmt:message key="menu.produto.adicionar"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/produto"><fmt:message key="menu.produto.manutencao"/></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/protect/manutencaoProduto"><fmt:message key="menu.produto.adicionar"/></a></li>
                                     <li><a href="${pageContext.request.contextPath}/protect/categoria"><fmt:message key="menu.produto.categoria"/></a></li>
                                 </ul>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.cadastroCliente"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><fmt:message key="menu.cadastroCliente.inserir"/></a></li>
                                     <li><a href="${pageContext.request.contextPath}/protect/pessoa"><fmt:message key="menu.cadastroCliente.manutencao"/></a></li>
                                     <li><a href="${pageContext.request.contextPath}/protect/cidade"><fmt:message key="menu.cadastroCliente.cidade"/></a></li>
                                 </ul>
@@ -98,7 +94,7 @@
             </nav>
             <!-- Main component for a primary marketing message or call to action -->
             <div class="container">
-            	<br>
+            	<br><br><br><br>
 					<jsp:invoke fragment="divBody"/>
 				<br>	
 				

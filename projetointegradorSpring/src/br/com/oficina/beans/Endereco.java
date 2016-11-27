@@ -21,6 +21,7 @@ public class Endereco {
 	private long id;
 	private String rua;
 	private String cep;
+	private String bairro;	
 	@OneToOne
 	private Cidade cidade;
 	
@@ -56,5 +57,11 @@ public class Endereco {
 	}
 	public void setCidade(Cidade cidade) {
 		this.cidade = cidade;
+	}
+	public String getBairro() {
+		return bairro;
+	}
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
 	}
 }

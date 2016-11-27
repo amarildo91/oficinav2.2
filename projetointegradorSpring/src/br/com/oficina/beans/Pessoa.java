@@ -25,20 +25,17 @@ public class Pessoa {
 	private long id;
 	private String nome;
 	
-	@Column(length=11)
-	private String cpf;
-	
-	@Column(length=10)
-	private String rg;
-	
+	@Column(name="cpf_cnpj")
+	private String cpfCnpj;	
 	@Column(name="dt_nascimento")
 	@Temporal(TemporalType.DATE)
 	private Date dtNascimento;
 	
 	@ManyToOne
 	private Endereco endereco;
-	private String telefone; 
-
+	private String telefone;
+	private String email;
+	
 	@Transient
 	private String data;
 	
@@ -47,8 +44,7 @@ public class Pessoa {
 	}
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
-	}
-	
+	}	
 	public String getData() {
 		return data;
 	}
@@ -72,24 +68,23 @@ public class Pessoa {
 	}
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-	public String getRg() {
-		return rg;
-	}
-	public void setRg(String rg) {
-		this.rg = rg;
-	}
+	}	
 	public Date getDtNascimento() {
 		return dtNascimento;
 	}
 	public void setDtNascimento(Date dtNascimento) {
 		this.dtNascimento = dtNascimento;
 	}
-	
+	public String getCpfCnpj() {
+		return cpfCnpj;
+	}
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }
