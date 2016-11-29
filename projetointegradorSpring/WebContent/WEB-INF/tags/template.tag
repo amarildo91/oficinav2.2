@@ -52,10 +52,10 @@
                              <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><fmt:message key="menu.relatorio"/> <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><fmt:message key="menu.relatorio.ordemServico"/></a></li>
+                                <!--     <li><a href="#"><fmt:message key="menu.relatorio.ordemServico"/></a></li>
                                     <li><a href="#"><fmt:message key="menu.relatorio.notaFiscal"/></a></li>
-                                    <li><a href="#"><fmt:message key="menu.relatorio.produto"/></a></li>                                    
-                                    <li><a href="#"><fmt:message key="menu.relatorio.cliente"/></a></li>
+                                   --> <li><a href="${pageContext.request.contextPath}/protect/produtoSaidaReportForm"><fmt:message key="menu.relatorio.produto"/></a></li>                                    
+                                  <!--   <li><a href="#"><fmt:message key="menu.relatorio.cliente"/></a></li> -->
                                 </ul>
                             </li>
                             <li class="dropdown">

@@ -1,5 +1,7 @@
 package br.com.oficina.controller.produto;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.oficina.beans.OrdemServico;
 import br.com.oficina.beans.Produto;
 import br.com.oficina.model.produto.ProdutoModelImpl;
 import br.com.oficina.utils.Constantes;
@@ -90,5 +93,21 @@ public class ProdutoController {
 		boolean update = produtoModel.editProduto(produto);
 		return "redirect:/protect/manutencaoProduto?insert=true&successMessage="+update;
 	}
-
+	
+	@RequestMapping("/protect/produtoSaidaReportForm")
+	public ModelAndView gerarRelatorioForm(){
+		System.out.println("gerarRelatorioForm() - enter");
+		
+		ModelAndView model = new ModelAndView("/protect/produto/produtoReport");
+		model.addObject("produtos", produtoModel.listAllProdutos());
+		return model;
+	}
+	
+	@RequestMapping(value="/protect/produtoSaidaReport", method=RequestMethod.POST)
+	public ModelAndView gerarRelatorio(@RequestParam(value="produto", required=false) Long idProduto, @RequestParam(value="dtInicio", required=false) String dtInicio, @RequestParam(value="dtFim", required=false) String dtFim){
+		System.out.println("gerarRelatorio(Long idProduto, String dtInicio, String dtFim) - enter");
+		 
+		List<OrdemServico> ordem = produtoModel.reportOrdemServicoProdutos(idProduto, dtInicio, dtFim);		
+		return new ModelAndView("pdfViewProduto", "ordemServico", ordem);
+	}
 }

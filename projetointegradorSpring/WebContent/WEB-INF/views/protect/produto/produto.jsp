@@ -68,14 +68,30 @@
 		<br>
 		<table class="table table-striped" id="lista">
 			<tr>
-				<td><b><fmt:message key="produto.id"/></b></td>
+				<td width=100>
+					<div>
+						<b><fmt:message key="produto.id"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '0')"/>
+					</div>	
+				</td>
 				<td>
 					<div>
 						<b><fmt:message key="produto.descricao"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
-			    	</div></td>
-				<td><b><fmt:message key="produto.valor"/></b></td>
-				<td><b><fmt:message key="produto.quantidade"/></b></td>
+			    	</div>
+			    </td>
+				<td>
+					<div>
+						<b><fmt:message key="produto.valor"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '2')"/>
+					</div>	
+				</td>
+				<td>
+					<div>					
+						<b><fmt:message key="produto.quantidade"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '3')"/>
+					</div>	
+				</td>
 				<td></td><td></td>
 			</tr>
 				
@@ -90,8 +106,8 @@
 				<tr>
 					<td>${produto.id}</td>
 					<td>${produto.descricao}</td>
-					<td>${produto.valor}</td>
-					<td>${produto.quantidade}</td>
+					<td align="right"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${produto.valor}"/></td>
+					<td align="right"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${produto.quantidade}"/></td>
 					<td><a data-id="${produto.id}" data-nome="${produto.descricao}" data-valor="${produto.valor}" data-qt="${produto.quantidade}"
 							data-categoria="${produto.categoria.id}"
 							href='#' onclick="javascript:editProduto(this);"><span class="glyphicon glyphicon-pencil"></span></a></td>
@@ -118,12 +134,12 @@
 			        </div>
 			        <div class="form-group">
 			        	<label for="valor"><fmt:message key="produto.modal.valor"/></label>
-			        	<input type="text" name="valor" class="form-control" id="valor" required="required"/>
+			        	<input type="number" name="valor" class="form-control" id="valor" required="required" step="any"/>
 			        </div>
 			        
 			        <div class="form-group">
 			        	<label for="quantidade"><fmt:message key="produto.modal.quantidade"/></label>
-			        	<input type="number" name="quantidade" class="form-control" id="quantidade" required="required"/>
+			        	<input type="number" name="quantidade" class="form-control" id="quantidade" required="required" step="any"/>
 			        </div>
 			        
 			        <div class="form-group">
@@ -162,12 +178,12 @@
 			        </div>
 			        <div class="form-group">
 			        	<label for="valor"><fmt:message key="produto.modal.valor"/></label>
-			        	<input type="text" name="valor" class="form-control" id="valorEdit" required="required"/>
+			        	<input type="number" name="valor" class="form-control" id="valorEdit" required="required" step="any"/>
 			        </div>
 			        
 			        <div class="form-group">
 			        	<label for="quantidade"><fmt:message key="produto.modal.quantidade"/></label>
-			        	<input type="number" name="quantidade" class="form-control" id="quantidadeEdit" required="required"/>
+			        	<input type="number" name="quantidade" class="form-control" id="quantidadeEdit" required="required" step="any"/>
 			        </div>
 			        
 			        <div class="form-group">

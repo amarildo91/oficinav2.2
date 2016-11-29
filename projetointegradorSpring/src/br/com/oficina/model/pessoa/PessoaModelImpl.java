@@ -57,10 +57,12 @@ public class PessoaModelImpl {
 			Date date = (Date)formatter.parse(pessoa.getData());
 			pessoa.setDtNascimento(date);
 			
-			pessoa.setCpfCnpj(pessoa.getCpfCnpj().replaceAll("[.-]", ""));
+			pessoa.setCpfCnpj(pessoa.getCpfCnpj().replaceAll("\\D", ""));
+			pessoa.setTelefone(pessoa.getTelefone().replaceAll("\\D", ""));	
 			
 			Cidade cidade = em.find(Cidade.class, endereco.getIdCidade());
 			endereco.setCidade(cidade);
+			endereco.setCep(endereco.getCep().replaceAll("\\D", ""));
 			daoEnd.persist(endereco);
 			pessoa.setEndereco(endereco);
 			
@@ -119,8 +121,12 @@ public class PessoaModelImpl {
 			Date date = (Date)formatter.parse(pessoa.getData());
 			pessoa.setDtNascimento(date);
 			
+			pessoa.setCpfCnpj(pessoa.getCpfCnpj().replaceAll("\\D", ""));
+			pessoa.setTelefone(pessoa.getTelefone().replaceAll("\\D", ""));			
+			
 			Cidade cidade = em.find(Cidade.class, endereco.getIdCidade());
 			endereco.setCidade(cidade);
+			endereco.setCep(endereco.getCep().replaceAll("\\D", ""));
 			
 			dao.merge(pessoa);
 			daoEnd.merge(endereco);

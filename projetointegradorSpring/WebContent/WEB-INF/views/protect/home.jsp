@@ -43,9 +43,15 @@
 		<table class="table table-striped" id="lista">
 			
 			<tr>
-				<td><b><fmt:message key="home.data"/></b></td>
 				<td>
-					<div class="navbar-form navbar-left">
+					<div>
+						<b><fmt:message key="home.data"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '0')"/>
+					</div>	
+				</td>
+				<td>
+					<div>
+						<b><fmt:message key="home.titulo"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
 			    	</div>
 				</td>

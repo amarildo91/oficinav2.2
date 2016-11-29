@@ -107,15 +107,17 @@ public class PDFNotaFiscalBuilder extends AbstractITextPdfView {
 		tableClinte.setWidths(new float[] {4.0f, 4.0f});
 		tableClinte.setSpacingBefore(10);
 		
+		String maskCpfCnpj = cliente.getCpfCnpj().length() > 12 ? "##.###.###/####-##" : "###.###.###-##";
+		
 		tableClinte.addCell(new Phrase("Razão Social: " + cliente.getNome(), fontText));
 		tableClinte.addCell(new Phrase("Contato: " + formatString(cliente.getTelefone(), "(##)#####-####"), fontText));
 		tableClinte.addCell(new Phrase("Email: " + cliente.getEmail(), fontText));
 		
 		tableClinte.addCell(new Phrase("Cidade: " + cidade.getNome() + " - " + cidade.getUf().getSigla(), fontText));
-		tableClinte.addCell(new Phrase("CPF/CNPJ: " + cliente.getCpfCnpj(), fontText));
+		tableClinte.addCell(new Phrase("CPF/CNPJ: " + formatString(cliente.getCpfCnpj(), maskCpfCnpj), fontText));
 		
 		tableClinte.addCell(new Phrase("Endereço: " + cliente.getEndereco().getRua()+", "+cliente.getEndereco().getBairro(), fontText));
-		tableClinte.addCell(new Phrase("CEP: " + cliente.getEndereco().getCep(), fontText));
+		tableClinte.addCell(new Phrase("CEP: " + formatString(cliente.getEndereco().getCep(), "#####-###"), fontText));
 		
 		doc.add(tableClinte);
 		// dados cliente - fim

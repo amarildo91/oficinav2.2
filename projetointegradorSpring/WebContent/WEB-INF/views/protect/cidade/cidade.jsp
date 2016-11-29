@@ -16,15 +16,38 @@
 				$("#idCidadeExclud").val(id);
 				$("#gridExcluiModal").modal();
 			}
-		
+			
+			function filter (phrase, _id, cellNr){  
+				var suche = phrase.value.toLowerCase(); 
+				var table = document.getElementById(_id);
+				var ele;  
+				for (var r = 1; r < table.rows.length; r++){  	
+				   ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");  
+				   if (ele.toLowerCase().indexOf(suche)>=0 )   
+				    	 table.rows[r].style.display = '';  	
+				   else 
+					  	 table.rows[r].style.display = 'none';  
+		       	 }	
+			 }
+			
 		</script>
 	
 		<h1><fmt:message key="cidade.titulo"/></h1>
 		<br>
-		<table class="table table-striped">
+		<table class="table table-striped" id="lista">
 			<tr>
-				<td><b><fmt:message key="cidade.nome"/></b></td>
-				<td><b><fmt:message key="cidade.uf"/></b></td>
+				<td>
+					<div>
+						<b><fmt:message key="cidade.nome"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '0')"/>
+					</div>	
+				</td>
+				<td>
+					<div>
+						<b><fmt:message key="cidade.uf"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
+					</div>	
+				</td>
 				<td></td><td></td>
 			</tr>
 				

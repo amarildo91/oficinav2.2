@@ -37,7 +37,7 @@ public class PDFOrdemServicoBuilder extends AbstractITextPdfView {
 		
 		Font fontTitle = new Font();
 		fontTitle.setFamily(FontFactory.TIMES_BOLD);
-		fontTitle.setSize(22.0F);
+		fontTitle.setSize(16.0F);
 		doc.add(new Paragraph("ROBERTO CLERI SOUZA OLIVEIRA 96821906068", fontTitle));
 		
 		Font fontSub = new Font();
@@ -63,14 +63,16 @@ public class PDFOrdemServicoBuilder extends AbstractITextPdfView {
 		tableClinte.setWidths(new float[] {4.0f, 4.0f});
 		tableClinte.setSpacingBefore(10);
 		
+		String maskCpfCnpj = cliente.getCpfCnpj().length() > 12 ? "##.###.###/####-##" : "###.###.###-##";
+		
 		tableClinte.addCell(new Phrase("Cliente: " + cliente.getNome(), fontText));
 		tableClinte.addCell(new Phrase("Contato: " + formatString(cliente.getTelefone(), "(##)#####-####"), fontText));
 		
 		tableClinte.addCell(new Phrase("Cidade: " + cidade.getNome() + " - " + cidade.getUf().getSigla(), fontText));
-		tableClinte.addCell(new Phrase("CPF: " + cliente.getCpfCnpj(), fontText));
+		tableClinte.addCell(new Phrase("CPF: " + formatString(cliente.getCpfCnpj(), maskCpfCnpj), fontText));
 		
 		tableClinte.addCell(new Phrase("Endereço: " + cliente.getEndereco().getRua()+", "+cliente.getEndereco().getBairro(), fontText));
-		tableClinte.addCell(new Phrase("CEP: " + cliente.getEndereco().getCep(), fontText));
+		tableClinte.addCell(new Phrase("CEP: " + formatString(cliente.getEndereco().getCep(), "#####-###"), fontText));
 		
 		doc.add(tableClinte);
 		

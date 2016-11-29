@@ -17,7 +17,15 @@
 		            if (query.length == 14) {
 		                $("#cpfCnpj").mask("99.999.999/9999-99");
 		            }
-		        });
+		        });		       
+		       
+	            var query = $('#cpfCnpj').val().replace(/[^a-zA-Z 0-9]+/g,'');
+	            if (query.length == 11) {
+	                $("#cpfCnpj").mask("999.999.999-99?99999");
+	            }
+	            if (query.length == 14) {
+	                $("#cpfCnpj").mask("99.999.999/9999-99");
+	            }	       
 
 				$("#telefone").mask("(99) 9999-9999?9");
 				$("#cep").mask("99999-999");
@@ -49,7 +57,7 @@
 	        </div>
 	        <div class="form-group">
 	        	<label for="email"><fmt:message key="pessoa.form.email"/></label>
-	        	<input type="email" name="email" class="form-control" id="email" value="${pessoa.email}" required="required"/>
+	        	<input type="email" name="email" class="form-control" id="email" value="${pessoa.email}"/>
 	        </div>
 	        <div class="form-group">
 	        	<label for="data"><fmt:message key="pessoa.form.dtNascimento"/></label>

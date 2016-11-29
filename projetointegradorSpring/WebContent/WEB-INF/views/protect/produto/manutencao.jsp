@@ -72,7 +72,12 @@
 		<br>
 		<table class="table table-striped" id="lista">
 			<tr>
-				<td><b><fmt:message key="produto.id"/></b></td>
+				<td width=100>
+					<div>
+						<b><fmt:message key="produto.id"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '0')"/>
+					</div>
+				</td>
 				<td>
 					<div>
 						<b><fmt:message key="produto.descricao"/></b>
@@ -105,7 +110,7 @@
 					<td>${produto.id}</td>
 					<td>${produto.descricao}</td>
 					<td>${produto.categoria.descricao}</td>
-					<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${produto.quantidade}"/></td>
+					<td><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${produto.quantidade}"/></td>
 					<td><a data-id="${produto.id}" data-nome="${produto.descricao}" data-valor="${produto.valor}" data-qt="${produto.quantidade}"
 							data-categoria="${produto.categoria.id}"
 							href='#' onclick="javascript:editProduto(this);"><span class="glyphicon glyphicon-plus"></span></a></td>

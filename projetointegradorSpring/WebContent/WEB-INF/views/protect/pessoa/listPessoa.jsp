@@ -29,14 +29,24 @@
 		<table class="table table-striped" id="lista">
 			
 			<tr>
-				<td><b><fmt:message key="pessoa.id"/></b></td>
+				<td width="100">
+					<div>
+						<b><fmt:message key="pessoa.id"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '0')"/>
+					</div>	
+				</td>
 				<td>
-					<div class="navbar-form navbar-left">
+					<div>
 						<b><fmt:message key="pessoa.nome"/></b>
 			        	<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '1')"/>
 			    	</div>
 				</td>
-				<td><b><fmt:message key="pessoa.cidade"/></b></td>
+				<td>
+					<div>
+						<b><fmt:message key="pessoa.cidade"/></b>
+						<input type="text" name="filt2" class="form-control" placeholder="Buscar" onKeyUp="filter(this, 'lista', '2')"/>
+					</div>	
+				</td>
 				<td></td><td></td>
 			</tr>
 			
